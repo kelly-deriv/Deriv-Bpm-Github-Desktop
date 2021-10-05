@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1qr5k64" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_173bvel">
+    <bpmn:participant id="Participant_0r71cih" name="Accounts - MT5 Reconciliation" processRef="MT5_Recon" />
+  </bpmn:collaboration>
+  <bpmn:process id="MT5_Recon" name="Accounts - MT5 Reconciliation" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_110wssk">
+      <bpmn:lane id="Lane_0xf04o5" name="Team Lead - Accounts">
+        <bpmn:flowNodeRef>Event_05wqguz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_11xlbom</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0v7plxw" name="Accounts">
+        <bpmn:flowNodeRef>Step8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1so4xoi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step10</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="Step8" name="Reconcile difference between MT5 Summary &#38; MT5 Transfer Data and update Integration file on differences noted" camunda:candidateGroups="Accounts">
+      <bpmn:documentation>Put in company name form fields (boolean)</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="MT5reconmonth" label="MT5 Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DIEL1" label="DIEL" type="boolean" />
+          <camunda:formField id="DIELGBP1" label="DIEL GBP" type="boolean" />
+          <camunda:formField id="SVGFIN1" label="SVG Financial " type="boolean" />
+          <camunda:formField id="SVGSYN1" label="SVG Synthetic " type="boolean" />
+          <camunda:formField id="DVL1" label="DVL" type="boolean" />
+          <camunda:formField id="DFX1" label="DFX" type="boolean" />
+          <camunda:formField id="DEL1" label="DEL" type="boolean" />
+          <camunda:formField id="PrepareMT5Gdrivereconsheet" label="Prepare MT5 Gdrive reconciliation sheet" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0bxdu6r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0uhbpun</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1so4xoi" name="Prepare, verify and upload reports to BigQuery and Tableau" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="MT5reconmonth" label="MT5 Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="MT5summaryreportprepared" label="MT5 Summary report prepared" type="boolean" />
+          <camunda:formField id="MT5transferreportprepared" label="MT5 Transfer report prepared" type="boolean" />
+          <camunda:formField id="MT5Accountslistprepared" label="MT5 Accounts list at month end prepared" type="boolean" />
+          <camunda:formField id="Spreadrevenuecalculated" label="Spread revenue calculated and updated in Financial Group Revenue - MT5 excel" type="boolean" />
+          <camunda:formField id="Opentradescalculated" label="Open Trades calculated and updated in Daily Reports excel" type="boolean" />
+          <camunda:formField id="Affiliatecommissionverified" label="Affiliate commission verified against MT5 Terminal" type="boolean" />
+          <camunda:formField id="Tradecorrectionverified" label="Trade correction verified against MT5 Terminal" type="boolean" />
+          <camunda:formField id="SOcompensationverified" label="SO Compensation figures verified against MT5 Terminal" type="boolean" />
+          <camunda:formField id="Transferdataverified" label="Transfer data verified against Client report" type="boolean" />
+          <camunda:formField id="UploadstoBQandTableau" label="MT5 Summary report, MT5 Transfer report, MT5 Accounts list uploaded to BigQuery and Tableau" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0gdh8j3</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bxdu6r</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_1" name="Download data from Metabase, MT5 Terminal and BackOffice (BO)" camunda:initiator="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="MT5reconmonth" label="MT5 Reconciliation Month (e.g May 20xx)" type="string" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, MT5reconmonth)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0gdh8j3</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_05wqguz" name="MT5 Reconciliation process ends">
+      <bpmn:incoming>Flow_1dqozp4</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_11xlbom" name="Perform final review and update in MT5 Recon Skype group" camunda:candidateUsers="Amsyar">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="MT5reconmonth" label="MT5 Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DIEL1" label="DIEL" type="boolean" />
+          <camunda:formField id="DIELGBP1" label="DIEL GBP" type="boolean" />
+          <camunda:formField id="SVGFIN1" label="SVG Financial " type="boolean" />
+          <camunda:formField id="SVGSYN1" label="SVG Synthetic " type="boolean" />
+          <camunda:formField id="DVL1" label="DVL" type="boolean" />
+          <camunda:formField id="DFX1" label="DFX" type="boolean" />
+          <camunda:formField id="DEL1" label="DEL" type="boolean" />
+          <camunda:formField id="ReviewedMT5GDrivereconsheet" label="Reviewed MT5 GDrive reconciliation sheet" type="boolean" />
+          <camunda:formField id="Amendmentrequired" label="Amendment required?" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0rp09ax</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dqozp4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1so7g3d</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="step10" name="Prepare Xero CSV files per company and upload into Xero" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="MT5reconmonth" label="MT5 Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DIEL2" label="DIEL" type="boolean" />
+          <camunda:formField id="DIELGBP2" label="DIEL GBP" type="boolean" />
+          <camunda:formField id="SVGFIN2" label="SVG Financial " type="boolean" />
+          <camunda:formField id="SVGSYN2" label="SVG Synthetic " type="boolean" />
+          <camunda:formField id="DVL2" label="DVL" type="boolean" />
+          <camunda:formField id="DFX2" label="DFX" type="boolean" />
+          <camunda:formField id="DEL2" label="DEL" type="boolean" />
+          <camunda:formField id="VerifyfigureswithMT5Team" label="Figures from Xero CSV files matches figures from MT5 Synthetic CFD-Daily Report (BigQuery) google sheet " type="boolean" />
+          <camunda:formField id="UploadtoXero" label="Companies Xero CSV files uploaded to Xero" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1so7g3d</bpmn:incoming>
+      <bpmn:incoming>Flow_0uhbpun</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rp09ax</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0gdh8j3" sourceRef="StartEvent_1" targetRef="Activity_1so4xoi" />
+    <bpmn:sequenceFlow id="Flow_0bxdu6r" sourceRef="Activity_1so4xoi" targetRef="Step8" />
+    <bpmn:sequenceFlow id="Flow_0uhbpun" sourceRef="Step8" targetRef="step10" />
+    <bpmn:sequenceFlow id="Flow_1dqozp4" name="Amendment not required" sourceRef="Activity_11xlbom" targetRef="Event_05wqguz">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!Amendmentrequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0rp09ax" sourceRef="step10" targetRef="Activity_11xlbom" />
+    <bpmn:sequenceFlow id="Flow_1so7g3d" name="Amendment required" sourceRef="Activity_11xlbom" targetRef="step10">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${Amendmentrequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:textAnnotation id="TextAnnotation_0kl59ag">
+      <bpmn:text>Intergation file will convert data from Tableau into Xero CSV file. The differences noted must be updated because this file will be converted to Xero CSV for uploading to Xero later</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0vod0zk" sourceRef="Step8" targetRef="TextAnnotation_0kl59ag" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_173bvel">
+      <bpmndi:BPMNShape id="Participant_0r71cih_di" bpmnElement="Participant_0r71cih" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1060" height="510" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0v7plxw_di" bpmnElement="Lane_0v7plxw" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1030" height="310" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0xf04o5_di" bpmnElement="Lane_0xf04o5" isHorizontal="true">
+        <dc:Bounds x="190" y="390" width="1030" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1so7g3d_di" bpmnElement="Flow_1so7g3d">
+        <di:waypoint x="930" y="480" />
+        <di:waypoint x="830" y="480" />
+        <di:waypoint x="830" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="850" y="483" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rp09ax_di" bpmnElement="Flow_0rp09ax">
+        <di:waypoint x="880" y="270" />
+        <di:waypoint x="980" y="270" />
+        <di:waypoint x="980" y="440" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dqozp4_di" bpmnElement="Flow_1dqozp4">
+        <di:waypoint x="1030" y="480" />
+        <di:waypoint x="1142" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1048" y="483" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0uhbpun_di" bpmnElement="Flow_0uhbpun">
+        <di:waypoint x="670" y="270" />
+        <di:waypoint x="780" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="778" y="446" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bxdu6r_di" bpmnElement="Flow_0bxdu6r">
+        <di:waypoint x="500" y="270" />
+        <di:waypoint x="570" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gdh8j3_di" bpmnElement="Flow_0gdh8j3">
+        <di:waypoint x="328" y="270" />
+        <di:waypoint x="400" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_05ldbdf_di" bpmnElement="Step8">
+        <dc:Bounds x="570" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_092o1sh_di" bpmnElement="Activity_1so4xoi">
+        <dc:Bounds x="400" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="292" y="252" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="267" y="295" width="89" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_05wqguz_di" bpmnElement="Event_05wqguz">
+        <dc:Bounds x="1142" y="462" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1126" y="505" width="69" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03snrny_di" bpmnElement="Activity_11xlbom">
+        <dc:Bounds x="930" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p3ok0l_di" bpmnElement="step10">
+        <dc:Bounds x="780" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0kl59ag_di" bpmnElement="TextAnnotation_0kl59ag">
+        <dc:Bounds x="660" y="110" width="300" height="73" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0vod0zk_di" bpmnElement="Association_0vod0zk">
+        <di:waypoint x="645" y="230" />
+        <di:waypoint x="674" y="183" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

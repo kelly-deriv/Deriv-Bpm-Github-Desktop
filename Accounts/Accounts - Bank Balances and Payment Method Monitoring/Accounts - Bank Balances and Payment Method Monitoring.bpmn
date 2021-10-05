@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_10ug0zg" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
+  <bpmn:collaboration id="Collaboration_0x62du4">
+    <bpmn:participant id="Participant_0pj87qq" name="Accounts - Bank Balances and Payment Method Monitoring" processRef="Bank_Balances_and_Payment_Method_Monitoring" />
+  </bpmn:collaboration>
+  <bpmn:process id="Bank_Balances_and_Payment_Method_Monitoring" name="Accounts - Bank Balances and Payment Method Monitoring" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1inygmf">
+      <bpmn:lane id="Lane_1vvqo4t" name="Accounts">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0y7crmk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0gd4ui7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_04ny1c4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1i2zn28</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" name="Bank balances and payment method monitoring starts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, Date)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1y0rpg8</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_0y7crmk" name="Prepare and upload bank balances data to big query, and save working files in Dropbox" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+          <camunda:formField id="BankBalanceTypeBank" label="Bank Balance Type: Bank prepared" type="boolean" />
+          <camunda:formField id="BankBalanceTypeBankData" label="Bank Balance Type: Bank data prepared" type="boolean" />
+          <camunda:formField id="BankBalanceTypeEWalletA" label="Bank Balance Type: E-wallet A prepared" type="boolean" />
+          <camunda:formField id="BankBalanceTypeEWalletB" label="Bank Balance Type: E-wallet B prepared" type="boolean" />
+          <camunda:formField id="ClientBalancesDataMetabase" label="Download client balances from Metabase" type="boolean" />
+          <camunda:formField id="ObtainTLReviewBankBalance" label="Obtain TL review via Bank Balance Skype group" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1y0rpg8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0pt7rgf</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0gd4ui7" name="Bank balances and payment method monitoring complete">
+      <bpmn:incoming>Flow_1cqopo2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_04ny1c4" name="Cross check funds in PSP portal and inform PIC to perform transfer if required" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1wiiw1r</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cqopo2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1i2zn28" name="Perform analysis in google sheet and Tableau workbook, email Compliance, and create Trello card (if required)" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+          <camunda:formField id="BankBalancesAnalysisGoogleSheetTableauWorkbook" label="Perform bank balances analysis in Conversion List for Bank Balance google sheet and Bank balances Tableau workbook" type="boolean" />
+          <camunda:formField id="EmailCompliaceBankBalancesAnalysis" label="Email Compliance the bank balances analysis" type="boolean" />
+          <camunda:formField id="ClientAccountTransferTrelloCard" label="Create card in Supplier Payments Trello Board (if required)" type="boolean" />
+          <camunda:formField id="CrossCheckMetabaseAndTableauClientBalancesData" label="Cross check client balances data in Metabase with Tableau and save working files in Dropbox" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0pt7rgf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wiiw1r</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1cqopo2" sourceRef="Activity_04ny1c4" targetRef="Event_0gd4ui7" />
+    <bpmn:sequenceFlow id="Flow_1y0rpg8" sourceRef="StartEvent_1" targetRef="Activity_0y7crmk" />
+    <bpmn:sequenceFlow id="Flow_1wiiw1r" sourceRef="Activity_1i2zn28" targetRef="Activity_04ny1c4" />
+    <bpmn:sequenceFlow id="Flow_0pt7rgf" sourceRef="Activity_0y7crmk" targetRef="Activity_1i2zn28" />
+    <bpmn:textAnnotation id="TextAnnotation_0q2vrxi">
+      <bpmn:text>- Data uploaded to big query will be reflected in Tableau.
+- TL will review the data in Tableau.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0c6qhb6">
+      <bpmn:text>- Accounts will need to cross check if the funds in PSP portal meet the minimum required operational amount.
+- Inform in the Bank Balance Skype group when PIC is informed.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1aa6rl2">
+      <bpmn:text>- For any big variances between currencies in    Tableau, PIC needs to provide justification to CFO.
+- Email Compliance the bank balances analysis as part of Compliance monitoring.
+- Create card in Supplier Payments Trello Board (if client account transfer is required).</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0hqq6m7" sourceRef="Activity_0y7crmk" targetRef="TextAnnotation_0q2vrxi" />
+    <bpmn:association id="Association_01was38" sourceRef="Activity_04ny1c4" targetRef="TextAnnotation_0c6qhb6" />
+    <bpmn:association id="Association_01p77dh" sourceRef="Activity_1i2zn28" targetRef="TextAnnotation_1aa6rl2" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0x62du4">
+      <bpmndi:BPMNShape id="Participant_0pj87qq_di" bpmnElement="Participant_0pj87qq" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1160" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1vvqo4t_di" bpmnElement="Lane_1vvqo4t" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1130" height="330" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0pt7rgf_di" bpmnElement="Flow_0pt7rgf">
+        <di:waypoint x="480" y="300" />
+        <di:waypoint x="620" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wiiw1r_di" bpmnElement="Flow_1wiiw1r">
+        <di:waypoint x="720" y="300" />
+        <di:waypoint x="850" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1y0rpg8_di" bpmnElement="Flow_1y0rpg8">
+        <di:waypoint x="288" y="300" />
+        <di:waypoint x="380" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cqopo2_di" bpmnElement="Flow_1cqopo2">
+        <di:waypoint x="950" y="300" />
+        <di:waypoint x="1052" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="252" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="325" width="82" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03e68cd_di" bpmnElement="Activity_0y7crmk">
+        <dc:Bounds x="380" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0gd4ui7_di" bpmnElement="Event_0gd4ui7">
+        <dc:Bounds x="1052" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1037" y="325" width="73" height="66" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0euom6k_di" bpmnElement="Activity_04ny1c4">
+        <dc:Bounds x="850" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_120a0cj_di" bpmnElement="Activity_1i2zn28">
+        <dc:Bounds x="620" y="260" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0q2vrxi_di" bpmnElement="TextAnnotation_0q2vrxi">
+        <dc:Bounds x="310" y="172" width="200" height="48" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0c6qhb6_di" bpmnElement="TextAnnotation_0c6qhb6">
+        <dc:Bounds x="935" y="130" width="270" height="82" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1aa6rl2_di" bpmnElement="TextAnnotation_1aa6rl2">
+        <dc:Bounds x="560" y="116" width="270" height="110" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0hqq6m7_di" bpmnElement="Association_0hqq6m7">
+        <di:waypoint x="405" y="260" />
+        <di:waypoint x="381" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_01was38_di" bpmnElement="Association_01was38">
+        <di:waypoint x="924" y="260" />
+        <di:waypoint x="953" y="212" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_01p77dh_di" bpmnElement="Association_01p77dh">
+        <di:waypoint x="660" y="260" />
+        <di:waypoint x="652" y="226" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

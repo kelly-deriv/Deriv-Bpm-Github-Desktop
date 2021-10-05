@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0qp2bzm" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_1r07i6x">
+    <bpmn:participant id="Participant_11xh1ta" name="Accounts - Duty  Submission (DMX IOMCE)" processRef="Duty_Submission_DMX_IOMCE" />
+  </bpmn:collaboration>
+  <bpmn:process id="Duty_Submission_DMX_IOMCE" name="Accounts - Duty  Submission (DMX IOMCE)" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1oyu62t">
+      <bpmn:lane id="Lane_0eqkdwb" name="Accounts">
+        <bpmn:flowNodeRef>Event_18cyctz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step3</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1es0dlx" name="Internal Audit">
+        <bpmn:flowNodeRef>Step2</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_01zb3kp" name="Compliance">
+        <bpmn:flowNodeRef>step4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Step5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1sdda01</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Event_18cyctz" name="Prepare IOMCE duty verification" camunda:initiator="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="IOMCE Duty Reporting for (e.g. Month 20xx)" type="string" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, Month)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0mmzdvf</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="step1" name="Prepare Summary Duty working file, obtain verification from team member, and email working file to IA" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="IOMCE Duty Reporting" type="string" />
+          <camunda:formField id="Metabasereport" label="Downloaded report from Metabase" type="boolean" />
+          <camunda:formField id="Backoffice" label="Downloaded report from Backoffice" type="boolean" />
+          <camunda:formField id="Exhangereport" label="Exchange rate data obtained from HM Revenue website" type="boolean" />
+          <camunda:formField id="PrepareWorkingfile" label="Prepared Summary Duty working file" type="boolean" />
+          <camunda:formField id="PeerVerification" label="Peer verification obtained" type="boolean" />
+          <camunda:formField id="Sharefile" label="Email Internal Audit to perform verification and provide approval " type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0mmzdvf</bpmn:incoming>
+      <bpmn:incoming>Flow_0vj7zij</bpmn:incoming>
+      <bpmn:outgoing>Flow_006epjj</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="step3" name="Create / update trello card on Supplier Payment Board for DMX Duty payment" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="IOMCE Duty Reporting" type="string" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_00s51vk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1thy79b</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="step4" name="Prepare Gambling Duty Return, obtain verification from team member and Head of Compliance" camunda:candidateUsers="olgab,kyle">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="IOMCE Duty Reporting" type="string" />
+          <camunda:formField id="Preparereport" label="Prepare Gambling duty return" type="boolean" />
+          <camunda:formField id="PeerVerification" label="Peer verification obtained" type="boolean" />
+          <camunda:formField id="Sharefile" label="Email HOC Summary Duty working file to review and approve Gambling duty return" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1thy79b</bpmn:incoming>
+      <bpmn:outgoing>Flow_0v5f8wt</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Step5" name="Obtain Head of Compliance&#39;s signature via SignRequest" camunda:candidateUsers="olgab,kyle">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="IOMCE Duty Reporting" type="string" />
+          <camunda:formField id="Signrequest" label="HOC signing request sent via signrequest.com" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0v5f8wt</bpmn:incoming>
+      <bpmn:outgoing>Flow_1i8y67g</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="step6" name="Save signed Gambling Duty Return in Dropbox and email relevant parties" camunda:candidateUsers="olgab,kyle">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="IOMCE Duty Reporting" type="string">
+            <camunda:validation />
+          </camunda:formField>
+          <camunda:formField id="Savegamblngduty" label="Copy of signed Gambling Duty Return saved in Dropbox" type="boolean" />
+          <camunda:formField id="emailIOMCE" label="Gambling Duty Return file emailed to IOM Customs" type="boolean" />
+          <camunda:formField id="emailILS" label="Gambling Duty Return file emailed to ILS" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1i8y67g</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d27xav</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Step2" name="Perform review and save working files in Dropbox" camunda:candidateGroups="IA">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="IOMCE Duty Reporting" type="string" />
+          <camunda:formField id="Dutyreportneedchange" label="Summary Duty working file requires amendment?" type="boolean" />
+          <camunda:formField id="PeerVerification" label="Peer verification obtained" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_006epjj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vj7zij</bpmn:outgoing>
+      <bpmn:outgoing>Flow_00s51vk</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1sdda01" name="Invoice received via x-acc@deriv.com for payment">
+      <bpmn:incoming>Flow_1d27xav</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_1d27xav" sourceRef="step6" targetRef="Event_1sdda01" />
+    <bpmn:sequenceFlow id="Flow_0mmzdvf" sourceRef="Event_18cyctz" targetRef="step1" />
+    <bpmn:sequenceFlow id="Flow_1i8y67g" sourceRef="Step5" targetRef="step6" />
+    <bpmn:sequenceFlow id="Flow_1thy79b" sourceRef="step3" targetRef="step4" />
+    <bpmn:sequenceFlow id="Flow_006epjj" sourceRef="step1" targetRef="Step2" />
+    <bpmn:sequenceFlow id="Flow_00s51vk" name="Amendment not required" sourceRef="Step2" targetRef="step3">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!Dutyreportneedchange}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0vj7zij" name="Amendment required" sourceRef="Step2" targetRef="step1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${Dutyreportneedchange}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0v5f8wt" sourceRef="step4" targetRef="Step5" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1r07i6x">
+      <bpmndi:BPMNShape id="Participant_11xh1ta_di" bpmnElement="Participant_11xh1ta" isHorizontal="true" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="159" y="80" width="1300" height="540" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0eqkdwb_di" bpmnElement="Lane_0eqkdwb" isHorizontal="true" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="189" y="280" width="1270" height="190" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1es0dlx_di" bpmnElement="Lane_1es0dlx" isHorizontal="true" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="189" y="470" width="1270" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_01zb3kp_di" bpmnElement="Lane_01zb3kp" isHorizontal="true" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="189" y="80" width="1270" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1d27xav_di" bpmnElement="Flow_1d27xav">
+        <di:waypoint x="1269" y="170" />
+        <di:waypoint x="1351" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mmzdvf_di" bpmnElement="Flow_0mmzdvf">
+        <di:waypoint x="297" y="360" />
+        <di:waypoint x="419" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1i8y67g_di" bpmnElement="Flow_1i8y67g" bioc:stroke="black" bioc:fill="white">
+        <di:waypoint x="1099" y="170" />
+        <di:waypoint x="1169" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1thy79b_di" bpmnElement="Flow_1thy79b" bioc:stroke="black" bioc:fill="white">
+        <di:waypoint x="859" y="330" />
+        <di:waypoint x="859" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_006epjj_di" bpmnElement="Flow_006epjj">
+        <di:waypoint x="469" y="400" />
+        <di:waypoint x="469" y="560" />
+        <di:waypoint x="649" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00s51vk_di" bpmnElement="Flow_00s51vk">
+        <di:waypoint x="749" y="560" />
+        <di:waypoint x="859" y="560" />
+        <di:waypoint x="859" y="410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="770" y="526" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vj7zij_di" bpmnElement="Flow_0vj7zij">
+        <di:waypoint x="699" y="520" />
+        <di:waypoint x="699" y="360" />
+        <di:waypoint x="519" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="629" y="436" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0v5f8wt_di" bpmnElement="Flow_0v5f8wt">
+        <di:waypoint x="909" y="170" />
+        <di:waypoint x="999" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_18cyctz_di" bpmnElement="Event_18cyctz" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="261" y="342" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="254" y="396" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0fritn0_di" bpmnElement="step1" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="419" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1h8rh9a_di" bpmnElement="step3" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="809" y="330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0r8hqk6_di" bpmnElement="step4" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="809" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0p2xz58_di" bpmnElement="Step5" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="999" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0xnboyg_di" bpmnElement="step6" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="1169" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_18xmbqt_di" bpmnElement="Step2" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="649" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1sdda01_di" bpmnElement="Event_1sdda01" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="1351" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1329" y="195" width="80" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

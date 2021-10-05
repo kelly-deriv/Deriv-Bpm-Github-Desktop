@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0in9ot2" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_0f9y410">
+    <bpmn:participant id="Participant_1d3go53" name="Accounts - DFX LFSA Report Submission" processRef="DFX_LFSA_Report_Submission" />
+  </bpmn:collaboration>
+  <bpmn:process id="DFX_LFSA_Report_Submission" name="Accounts - DFX LFSA Report Submission" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_00hz1f6">
+      <bpmn:lane id="Lane_1nudusy" name="Compliance">
+        <bpmn:flowNodeRef>step6</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Step8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0l2vu0a</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0tjrrb1" name="Accounts">
+        <bpmn:flowNodeRef>step3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Step7</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="step3" name="Verify DFX file information via email" camunda:candidateGroups="AccountsDFX">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="DFXSubmissionInterval" label="DFX Report Submission Interval (i.e. Annual, Quarter)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DFXSubmissionPeriod" label="DFX Report Submission Period (e.g. YE Month 2020, Q1 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DFXreportneedamendment" label="DFX report requires amendment?" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1dqx0tw</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qzj10s</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1oavh8b</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="step1" name="Starts after end of every quarter/year" camunda:initiator="AccountsDFX">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="DFXSubmissionInterval" label="DFX Report Submission Interval (i.e. Annual, Quarter)" type="string" />
+          <camunda:formField id="DFXSubmissionPeriod" label="DFX Report Submission Period (e.g. YE June 2021, Q1 2021)" type="string" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, DFXSubmissionInterval)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1ajsvzt</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_060djth" sourceRef="step5" targetRef="step6" />
+    <bpmn:sequenceFlow id="Flow_1oavh8b" name="No amendment required" sourceRef="step3" targetRef="step5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!DFXreportneedamendment}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1qzj10s" name="Need Amendment" sourceRef="step3" targetRef="step2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${DFXreportneedamendment}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1dqx0tw" sourceRef="step2" targetRef="step3" />
+    <bpmn:sequenceFlow id="Flow_1ajsvzt" sourceRef="step1" targetRef="step2" />
+    <bpmn:userTask id="step2" name="Fill up/amend DFX file with working file and email team member" camunda:candidateGroups="AccountsDFX">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="DFXSubmissionInterval" label="DFX Report Submission Interval (i.e. Annual, Quarter)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DFXSubmissionPeriod" label="DFX Report Submission Period (e.g. YE Month 2020, Q1 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Accountspreparefinancial" label="Update data into Financial position report from LFSA" type="boolean" />
+          <camunda:formField id="Accountsprepareincome" label="Update data into Income Statement report from LFSA" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1ajsvzt</bpmn:incoming>
+      <bpmn:incoming>Flow_1qzj10s</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dqx0tw</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="step5" name="Store finalised working file in Dropbox and email to Compliance" camunda:candidateGroups="AccountsDFX">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="DFXSubmissionInterval" label="DFX Report Submission Interval (i.e. Annual, Quarter)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DFXSubmissionPeriod" label="DFX Report Submission Period (e.g. YE Month 2020, Q1 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Saveworking" label="Working data stored in Dropbox" type="boolean" />
+          <camunda:formField id="Emailcompliance" label="Update Compliance upon completion of report" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1oavh8b</bpmn:incoming>
+      <bpmn:outgoing>Flow_060djth</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Step7" name="Amend and resend DFX file with workings via email" camunda:candidateGroups="AccountsDFX">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="DFXSubmissionInterval" label="DFX Report Submission Interval (i.e. Annual, Quarter)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DFXSubmissionPeriod" label="DFX Report Submission Period (e.g. YE Month 2020, Q1 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06z3m58</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pt1h4p</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_06z3m58" name="Need Amendment" sourceRef="step6" targetRef="Step7">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${DFXreportneedamendment}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1pt1h4p" sourceRef="Step7" targetRef="step6" />
+    <bpmn:userTask id="step6" name="Verify DFX file information via email" camunda:candidateGroups="ComplianceDFX">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="DFXSubmissionInterval" label="DFX Report Submission Interval (i.e. Annual, Quarter)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DFXSubmissionPeriod" label="DFX Report Submission Period (e.g. YE Month 2020, Q1 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DFXreportneedamendment" label="DFX report requires amendment?" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_060djth</bpmn:incoming>
+      <bpmn:incoming>Flow_1pt1h4p</bpmn:incoming>
+      <bpmn:outgoing>Flow_06z3m58</bpmn:outgoing>
+      <bpmn:outgoing>Flow_081yv8d</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Step8" name="Upload data to LFSA portal for report submission" camunda:candidateGroups="ComplianceDFX">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="DFXSubmissionInterval" label="DFX Report Submission Interval (i.e. Annual, Quarter)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="DFXSubmissionPeriod" label="DFX Report Submission Period (e.g. YE Month 2020, Q1 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_081yv8d</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fo4xmz</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_0l2vu0a" name="Process Ends">
+      <bpmn:incoming>Flow_1fo4xmz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_081yv8d" name="No Amendment" sourceRef="step6" targetRef="Step8">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!DFXreportneedamendment}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1fo4xmz" sourceRef="Step8" targetRef="Event_0l2vu0a" />
+    <bpmn:textAnnotation id="TextAnnotation_13afw6d">
+      <bpmn:text>Quarterly submission: due 15 days after quarter end
+Yearly submission: due 30 days after year end</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0g8ohnq" sourceRef="step1" targetRef="TextAnnotation_13afw6d" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0f9y410">
+      <bpmndi:BPMNShape id="Participant_1d3go53_di" bpmnElement="Participant_1d3go53" isHorizontal="true">
+        <dc:Bounds x="157" y="80" width="1673" height="460" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0tjrrb1_di" bpmnElement="Lane_0tjrrb1" isHorizontal="true">
+        <dc:Bounds x="187" y="80" width="1643" height="290" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1nudusy_di" bpmnElement="Lane_1nudusy" isHorizontal="true">
+        <dc:Bounds x="187" y="370" width="1643" height="170" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1fo4xmz_di" bpmnElement="Flow_1fo4xmz">
+        <di:waypoint x="1530" y="460" />
+        <di:waypoint x="1642" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_081yv8d_di" bpmnElement="Flow_081yv8d">
+        <di:waypoint x="1290" y="460" />
+        <di:waypoint x="1430" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1321" y="463" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pt1h4p_di" bpmnElement="Flow_1pt1h4p">
+        <di:waypoint x="1190" y="250" />
+        <di:waypoint x="1150" y="250" />
+        <di:waypoint x="1150" y="460" />
+        <di:waypoint x="1190" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06z3m58_di" bpmnElement="Flow_06z3m58">
+        <di:waypoint x="1240" y="420" />
+        <di:waypoint x="1240" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1245" y="319" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ajsvzt_di" bpmnElement="Flow_1ajsvzt">
+        <di:waypoint x="298" y="240" />
+        <di:waypoint x="430" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dqx0tw_di" bpmnElement="Flow_1dqx0tw">
+        <di:waypoint x="530" y="240" />
+        <di:waypoint x="650" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qzj10s_di" bpmnElement="Flow_1qzj10s">
+        <di:waypoint x="700" y="200" />
+        <di:waypoint x="700" y="180" />
+        <di:waypoint x="480" y="180" />
+        <di:waypoint x="480" y="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="574" y="146" width="89" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1oavh8b_di" bpmnElement="Flow_1oavh8b">
+        <di:waypoint x="750" y="240" />
+        <di:waypoint x="920" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="763" y="206" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_060djth_di" bpmnElement="Flow_060djth">
+        <di:waypoint x="970" y="280" />
+        <di:waypoint x="970" y="460" />
+        <di:waypoint x="1190" y="460" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1o8owcw_di" bpmnElement="step3">
+        <dc:Bounds x="650" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="step1">
+        <dc:Bounds x="262" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="237" y="265" width="90" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zcul7j_di" bpmnElement="step2">
+        <dc:Bounds x="430" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0z2p4o4_di" bpmnElement="step5">
+        <dc:Bounds x="920" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10bhvh0_di" bpmnElement="Step7">
+        <dc:Bounds x="1190" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04r6k9b_di" bpmnElement="step6">
+        <dc:Bounds x="1190" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_07sb8jr_di" bpmnElement="Step8">
+        <dc:Bounds x="1430" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0l2vu0a_di" bpmnElement="Event_0l2vu0a">
+        <dc:Bounds x="1642" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1626" y="485" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_13afw6d_di" bpmnElement="TextAnnotation_13afw6d">
+        <dc:Bounds x="300" y="100" width="342" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0g8ohnq_di" bpmnElement="Association_0g8ohnq">
+        <di:waypoint x="289" y="224" />
+        <di:waypoint x="336" y="140" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_11jzv80" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_0tffkv5">
+    <bpmn:participant id="Participant_046yg4p" name="Accounts - Bank / Credit Card Reconciliation" processRef="Bank_Credit_Card_Reconciliation" />
+  </bpmn:collaboration>
+  <bpmn:process id="Bank_Credit_Card_Reconciliation" name="Accounts - Bank / Credit Card Reconciliation" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1n6ead2">
+      <bpmn:lane id="Lane_0yr1szl" name="Accounts">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0xl0uic</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step4</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" name="Perform Bank / Credit Card reconciliation by 1st week of the month for the preceding month" camunda:initiator="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Bank / Credit Card Reconciliation Month (e.g. June 20xx)" type="string" />
+          <camunda:formField id="CompanyName" label="Company Name (e.g. DSSB, and 4X)" type="string" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, Month)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1r20fdo</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_0xl0uic" name="Bank / Credit Card reconciliation completed">
+      <bpmn:incoming>Flow_007zwu8</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_007zwu8" sourceRef="step4" targetRef="Event_0xl0uic" />
+    <bpmn:sequenceFlow id="Flow_03ljzm0" sourceRef="step3" targetRef="step4" />
+    <bpmn:sequenceFlow id="Flow_1r20fdo" sourceRef="StartEvent_1" targetRef="step1" />
+    <bpmn:sequenceFlow id="Flow_1f69rvt" sourceRef="step1" targetRef="step3" />
+    <bpmn:userTask id="step1" name="Generate bank statement through bank portal or email and import into Xero" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Bank / Credit Card Reconciliation Month (e.g. June 20xx)" type="string" />
+          <camunda:formField id="CompanyName" label="Company Name (e.g. DSSB, and 4X)" type="string" />
+          <camunda:formField id="GenerateStatement" label="Generate bank statement from portal/email" type="boolean" />
+          <camunda:formField id="ImportStatementinXero" label="Import bank statement into Xero" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1r20fdo</bpmn:incoming>
+      <bpmn:outgoing>Flow_1f69rvt</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="step3" name="Reconcile each payment item in Xero against bank statement" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Bank / Credit Card Reconciliation Month (e.g. June 20xx)" type="string" />
+          <camunda:formField id="CompanyName" label="Company Name (e.g. DSSB, and 4X)" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1f69rvt</bpmn:incoming>
+      <bpmn:outgoing>Flow_03ljzm0</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="step4" name="Update google sheet to reconcile closing balance between bank statement and Xero" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Bank / Credit Card Reconciliation Month (e.g. June 20xx)" type="string" />
+          <camunda:formField id="CompanyName" label="Company Name (e.g. DSSB, and 4X)" type="string" />
+          <camunda:formField id="UpdateGoogleSheet" label="Update Google sheet with bank statement and Xero balances screenshot" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03ljzm0</bpmn:incoming>
+      <bpmn:outgoing>Flow_007zwu8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:textAnnotation id="TextAnnotation_0pj45tb">
+      <bpmn:text>insert screenshot of bank statement and Xero balances</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0b57pbs">
+      <bpmn:text>Create entries for bank charges</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1byzk2k" sourceRef="step4" targetRef="TextAnnotation_0pj45tb" />
+    <bpmn:association id="Association_0g2qig3" sourceRef="step3" targetRef="TextAnnotation_0b57pbs" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0tffkv5">
+      <bpmndi:BPMNShape id="Participant_046yg4p_di" bpmnElement="Participant_046yg4p" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="920" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0yr1szl_di" bpmnElement="Lane_0yr1szl" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="890" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1f69rvt_di" bpmnElement="Flow_1f69rvt">
+        <di:waypoint x="480" y="230" />
+        <di:waypoint x="580" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r20fdo_di" bpmnElement="Flow_1r20fdo">
+        <di:waypoint x="315" y="230" />
+        <di:waypoint x="380" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ljzm0_di" bpmnElement="Flow_03ljzm0">
+        <di:waypoint x="680" y="230" />
+        <di:waypoint x="779" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_007zwu8_di" bpmnElement="Flow_007zwu8">
+        <di:waypoint x="879" y="230" />
+        <di:waypoint x="992" y="230" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="279" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="258" y="255" width="82" height="80" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xl0uic_di" bpmnElement="Event_0xl0uic">
+        <dc:Bounds x="992" y="212" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="978" y="255" width="65" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_006qv3k_di" bpmnElement="step1" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="380" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0w5kxb1_di" bpmnElement="step3" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="580" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kj2mz2_di" bpmnElement="step4">
+        <dc:Bounds x="779" y="190" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0pj45tb_di" bpmnElement="TextAnnotation_0pj45tb">
+        <dc:Bounds x="880" y="110" width="170" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0b57pbs_di" bpmnElement="TextAnnotation_0b57pbs">
+        <dc:Bounds x="570" y="300" width="199.99401723037653" height="25.935306317804727" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1byzk2k_di" bpmnElement="Association_1byzk2k">
+        <di:waypoint x="867" y="190" />
+        <di:waypoint x="906" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0g2qig3_di" bpmnElement="Association_0g2qig3">
+        <di:waypoint x="663" y="270" />
+        <di:waypoint x="687" y="300" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1eni5fn" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_0bm2tks">
+    <bpmn:participant id="Participant_0vgp9vl" name="Accounts - Binary Shop Sales Commission Reconciliation &#38; Payment" processRef="Binary_Shop_Sales_Commission_Reconciliation_Payment" />
+  </bpmn:collaboration>
+  <bpmn:process id="Binary_Shop_Sales_Commission_Reconciliation_Payment" name="Accounts - Binary Shop Sales Commission Reconciliation &#38; Payment" isExecutable="true">
+    <bpmn:extensionElements>
+      <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, Month)}" event="end" />
+    </bpmn:extensionElements>
+    <bpmn:laneSet id="LaneSet_0bqctr1">
+      <bpmn:lane id="Lane_14x4qkr" name="Accounts Reporting">
+        <bpmn:flowNodeRef>Gateway_0fdfm2z</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_10nr0h9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_04c5e92</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1sivz8d</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0l6e5ho</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1xt2yxk</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1g10nsw</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1w6ps0y</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1mwal6v" name="Marketing">
+        <bpmn:flowNodeRef>Activity_08w9omv</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1o62vq5</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_1gox7j9" sourceRef="StartEvent_1" targetRef="Gateway_0fdfm2z" />
+    <bpmn:sequenceFlow id="Flow_0050uvg" name="Yes" sourceRef="Gateway_0fdfm2z" targetRef="Activity_04c5e92">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${Anyrefundamount}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1xmq5yc" name="No" sourceRef="Gateway_0fdfm2z" targetRef="Activity_1sivz8d">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!Anyrefundamount}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_16jq2r8" sourceRef="Activity_04c5e92" targetRef="Activity_1sivz8d" />
+    <bpmn:sequenceFlow id="Flow_0hwss35" sourceRef="Activity_1sivz8d" targetRef="Activity_08w9omv" />
+    <bpmn:sequenceFlow id="Flow_0r28ctg" sourceRef="Activity_08w9omv" targetRef="Activity_1o62vq5" />
+    <bpmn:sequenceFlow id="Flow_1678eya" sourceRef="Activity_1o62vq5" targetRef="Activity_0l6e5ho" />
+    <bpmn:sequenceFlow id="Flow_0vm20ud" sourceRef="Activity_0l6e5ho" targetRef="Activity_1xt2yxk" />
+    <bpmn:sequenceFlow id="Flow_1wt4cy3" sourceRef="Activity_1xt2yxk" targetRef="Activity_1g10nsw" />
+    <bpmn:sequenceFlow id="Flow_06t4xk1" sourceRef="Activity_1g10nsw" targetRef="Activity_1w6ps0y" />
+    <bpmn:sequenceFlow id="Flow_0ys2iz2" sourceRef="Activity_1w6ps0y" targetRef="Event_10nr0h9" />
+    <bpmn:exclusiveGateway id="Gateway_0fdfm2z" name="Any refund amount?">
+      <bpmn:incoming>Flow_1gox7j9</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xmq5yc</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0050uvg</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:startEvent id="StartEvent_1" name="Binary Sales Report generated from Xero every 10th of the month" camunda:initiator="AccountsReporting">
+      <bpmn:extensionElements>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, Month)}" event="end" />
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g 2021)" type="string" />
+          <camunda:formField id="Anyrefundamount" label="Any refund amount?" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1gox7j9</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_10nr0h9" name="Sales commission                payout                 completed">
+      <bpmn:incoming>Flow_0ys2iz2</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_04c5e92" name="Make adjustment on the sales amount for the month" camunda:candidateGroups="AccountsReporting">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month(e.g 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0050uvg</bpmn:incoming>
+      <bpmn:outgoing>Flow_16jq2r8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1sivz8d" name="Document 80% commission from shop sales in the Sales report" camunda:candidateGroups="AccountsReporting">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month(e.g 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1xmq5yc</bpmn:incoming>
+      <bpmn:incoming>Flow_16jq2r8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hwss35</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_08w9omv" name="Cross check the Sales report against Shopify feed" camunda:candidateGroups="AffMktgOps">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month(e.g 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0hwss35</bpmn:incoming>
+      <bpmn:outgoing>Flow_0r28ctg</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1o62vq5" name="Provide remarks on sellers details in spreadsheet and share with Accounts team via email" camunda:candidateGroups="AffMktgOps">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month(e.g 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0r28ctg</bpmn:incoming>
+      <bpmn:outgoing>Flow_1678eya</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0l6e5ho" name="Update the Sales report with the seller&#39;s information" camunda:candidateGroups="AccountsReporting">
+      <bpmn:extensionElements>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month(e.g 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Salespersonname" label="Sales person name" type="boolean" />
+          <camunda:formField id="Amount" label="Amount" type="boolean" />
+          <camunda:formField id="Commissionamount" label="Commission Amount" type="boolean" />
+          <camunda:formField id="Paymentemailid" label="Payment email id" type="boolean" />
+          <camunda:formField id="CRloginid" label="CR login id" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1678eya</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vm20ud</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1xt2yxk" name="Obtain Accounts HoD approval via email to process payment" camunda:candidateGroups="AccountsReporting">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0vm20ud</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wt4cy3</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1g10nsw" name="Upload payment in Trello Card" camunda:candidateGroups="AccountsReporting">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1wt4cy3</bpmn:incoming>
+      <bpmn:outgoing>Flow_06t4xk1</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1w6ps0y" name="Send proof of payment and shop commission details report to Marketing via email" camunda:candidateGroups="AccountsReporting">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g 2021)" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06t4xk1</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ys2iz2</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:textAnnotation id="TextAnnotation_19ifh4d">
+      <bpmn:text>Documents stored in Dropbox</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0r30xg4" sourceRef="Activity_1w6ps0y" targetRef="TextAnnotation_19ifh4d" />
+    <bpmn:textAnnotation id="TextAnnotation_0rmo6gk">
+      <bpmn:text>- Salesperson name
+- Amount
+- Commission amount
+- Payment email id
+- CR login id</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_01kdvi8" sourceRef="Activity_0l6e5ho" targetRef="TextAnnotation_0rmo6gk" />
+    <bpmn:textAnnotation id="TextAnnotation_13ww9p9">
+      <bpmn:text>MM_YYYY_Sales Report</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1umk1a6" sourceRef="Activity_1o62vq5" targetRef="TextAnnotation_13ww9p9" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0bm2tks">
+      <bpmndi:BPMNShape id="Participant_0vgp9vl_di" bpmnElement="Participant_0vgp9vl" isHorizontal="true">
+        <dc:Bounds x="125" y="114" width="1635" height="546" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1mwal6v_di" bpmnElement="Lane_1mwal6v" isHorizontal="true">
+        <dc:Bounds x="155" y="440" width="1605" height="220" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_14x4qkr_di" bpmnElement="Lane_14x4qkr" isHorizontal="true">
+        <dc:Bounds x="155" y="114" width="1605" height="326" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0ys2iz2_di" bpmnElement="Flow_0ys2iz2">
+        <di:waypoint x="1480" y="260" />
+        <di:waypoint x="1582" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06t4xk1_di" bpmnElement="Flow_06t4xk1">
+        <di:waypoint x="1320" y="260" />
+        <di:waypoint x="1380" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wt4cy3_di" bpmnElement="Flow_1wt4cy3">
+        <di:waypoint x="1150" y="260" />
+        <di:waypoint x="1220" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vm20ud_di" bpmnElement="Flow_0vm20ud">
+        <di:waypoint x="980" y="260" />
+        <di:waypoint x="1050" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1678eya_di" bpmnElement="Flow_1678eya">
+        <di:waypoint x="930" y="510" />
+        <di:waypoint x="930" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0r28ctg_di" bpmnElement="Flow_0r28ctg">
+        <di:waypoint x="770" y="550" />
+        <di:waypoint x="880" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hwss35_di" bpmnElement="Flow_0hwss35">
+        <di:waypoint x="630" y="260" />
+        <di:waypoint x="720" y="260" />
+        <di:waypoint x="720" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16jq2r8_di" bpmnElement="Flow_16jq2r8">
+        <di:waypoint x="450" y="390" />
+        <di:waypoint x="580" y="390" />
+        <di:waypoint x="580" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xmq5yc_di" bpmnElement="Flow_1xmq5yc">
+        <di:waypoint x="425" y="260" />
+        <di:waypoint x="530" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="432" y="244" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0050uvg_di" bpmnElement="Flow_0050uvg">
+        <di:waypoint x="400" y="285" />
+        <di:waypoint x="400" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="411" y="292" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1gox7j9_di" bpmnElement="Flow_1gox7j9">
+        <di:waypoint x="278" y="260" />
+        <di:waypoint x="375" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_0fdfm2z_di" bpmnElement="Gateway_0fdfm2z" isMarkerVisible="true">
+        <dc:Bounds x="375" y="235" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="374" y="206" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="242" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="217" y="290" width="86" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_10nr0h9_di" bpmnElement="Event_10nr0h9">
+        <dc:Bounds x="1582" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1556" y="285" width="89" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1txdvjx_di" bpmnElement="Activity_04c5e92">
+        <dc:Bounds x="350" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kl4p2x_di" bpmnElement="Activity_1sivz8d">
+        <dc:Bounds x="530" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_193zr79_di" bpmnElement="Activity_08w9omv">
+        <dc:Bounds x="670" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1vgd9g8_di" bpmnElement="Activity_1o62vq5">
+        <dc:Bounds x="880" y="510" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_10km084_di" bpmnElement="Activity_0l6e5ho">
+        <dc:Bounds x="880" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0v8fn22_di" bpmnElement="Activity_1xt2yxk">
+        <dc:Bounds x="1050" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wb1pb2_di" bpmnElement="Activity_1g10nsw" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="1220" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1axptk3_di" bpmnElement="Activity_1w6ps0y">
+        <dc:Bounds x="1380" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_19ifh4d_di" bpmnElement="TextAnnotation_19ifh4d">
+        <dc:Bounds x="1470" y="130" width="99.99156545209178" height="52.631578947368425" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0rmo6gk_di" bpmnElement="TextAnnotation_0rmo6gk" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="960" y="130" width="149.9601548269581" height="76.50273224043715" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_13ww9p9_di" bpmnElement="TextAnnotation_13ww9p9" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="970" y="450" width="170" height="38" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0r30xg4_di" bpmnElement="Association_0r30xg4">
+        <di:waypoint x="1450" y="220" />
+        <di:waypoint x="1485" y="183" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_01kdvi8_di" bpmnElement="Association_01kdvi8">
+        <di:waypoint x="958" y="220" />
+        <di:waypoint x="967" y="207" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1umk1a6_di" bpmnElement="Association_1umk1a6">
+        <di:waypoint x="977" y="513" />
+        <di:waypoint x="1000" y="488" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

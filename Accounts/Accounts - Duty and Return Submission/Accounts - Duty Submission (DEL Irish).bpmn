@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1ro908n" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0">
+  <bpmn:collaboration id="Collaboration_0a6ktf3">
+    <bpmn:participant id="Participant_1f04dny" name="Accounts - Duty Submission (DEL Irish)" processRef="Duty_Submission_DEL_Irish" />
+  </bpmn:collaboration>
+  <bpmn:process id="Duty_Submission_DEL_Irish" name="Accounts - Duty Submission (DEL Irish)" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1hzakjt">
+      <bpmn:lane id="Lane_1egvrhv" name="Compliance">
+        <bpmn:flowNodeRef>Activity_1r4n9vv</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0cxfsd1" name="Internal Audit">
+        <bpmn:flowNodeRef>Activity_0e9bkvp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0yvlsh9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0ub8x8y</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0mwjs3v" name="Accounts">
+        <bpmn:flowNodeRef>Activity_0pzwz2h</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0x537zu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0m0t6mp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1ctt6oi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1y7kmil</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1xa1dmh</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="Activity_0pzwz2h" name="Obtain TL approval via Skype group and email IA to perform review" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g. Jan 20xx)" type="string" />
+          <camunda:formField id="QuarterlyReporting" label="Quarterly reporting?" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07s5l7h</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qw4imm</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0x537zu" name="Prepare reports and save working files in Dropbox" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g. Jan 20xx)" type="string" />
+          <camunda:formField id="QuarterlyReporting" label="Quarterly reporting?" type="boolean" />
+          <camunda:formField id="IrishDutyMetabaseData" label="Download reports from Metabase" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qlg06u</bpmn:incoming>
+      <bpmn:outgoing>Flow_07s5l7h</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="Event_0m0t6mp" name="Duty submission starts" camunda:initiator="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g. Jan 20xx)" type="string" />
+          <camunda:formField id="QuarterlyReporting" label="Quarterly reporting?" type="boolean" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, Month)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0qlg06u</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_07s5l7h" sourceRef="Activity_0x537zu" targetRef="Activity_0pzwz2h" />
+    <bpmn:sequenceFlow id="Flow_0qlg06u" sourceRef="Event_0m0t6mp" targetRef="Activity_0x537zu" />
+    <bpmn:sequenceFlow id="Flow_0qw4imm" sourceRef="Activity_0pzwz2h" targetRef="Activity_0yvlsh9" />
+    <bpmn:sequenceFlow id="Flow_18nac3l" sourceRef="Activity_1r4n9vv" targetRef="Event_1xa1dmh" />
+    <bpmn:userTask id="Activity_0e9bkvp" name="Email duty verification to Accounts" camunda:candidateGroups="IA">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g. Jan 20xx)" type="string" />
+          <camunda:formField id="QuarterlyReporting" label="Quarterly reporting?" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_05ltvj5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1l0c9y5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0yvlsh9" name="Perform review and save working files in Dropbox" camunda:candidateGroups="IA">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g. Jan 20xx)" type="string" />
+          <camunda:formField id="QuarterlyReporting" label="Quarterly reporting?" type="boolean" />
+          <camunda:formField id="PeerVerificationDutyReview" label="Peer verification obtained" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0qw4imm</bpmn:incoming>
+      <bpmn:outgoing>Flow_07s2t9s</bpmn:outgoing>
+      <bpmn:outgoing>Flow_05ltvj5</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0ub8x8y" name="Provide approval via email, prepare report and save in Dropbox" camunda:candidateGroups="IA">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g. Jan 20xx)" type="string" />
+          <camunda:formField id="QuarterlyReporting" label="Quarterly reporting?" type="boolean" />
+          <camunda:formField id="QuarterlyDutyReviewReportIrish" label="Prepare Irish Quarterly Duty Review report" type="boolean" />
+          <camunda:formField id="PeerVerificationIrishReport" label="Peer verification obtained " type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_07s2t9s</bpmn:incoming>
+      <bpmn:outgoing>Flow_0fz4w2p</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1ctt6oi" name="Create card in Suppler Payments Trello Board and update Xero" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g. Jan 20xx)" type="string" />
+          <camunda:formField id="QuarterlyReporting" label="Quarterly reporting?" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1l0c9y5</bpmn:incoming>
+      <bpmn:outgoing>Flow_0qvvawb</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1y7kmil" name="Duty verification completed">
+      <bpmn:incoming>Flow_0qvvawb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_05ltvj5" name="Monthly duty verification" sourceRef="Activity_0yvlsh9" targetRef="Activity_0e9bkvp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!QuarterlyReporting}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1l0c9y5" sourceRef="Activity_0e9bkvp" targetRef="Activity_1ctt6oi" />
+    <bpmn:sequenceFlow id="Flow_07s2t9s" name="Quarterly Reporting" sourceRef="Activity_0yvlsh9" targetRef="Activity_0ub8x8y">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${QuarterlyReporting}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0fz4w2p" sourceRef="Activity_0ub8x8y" targetRef="Activity_1r4n9vv" />
+    <bpmn:sequenceFlow id="Flow_0qvvawb" sourceRef="Activity_1ctt6oi" targetRef="Event_1y7kmil" />
+    <bpmn:userTask id="Activity_1r4n9vv" name="Make payment, submit duty in regulatory body portal, and email attachments to Accounts" camunda:candidateUsers="teriza">
+      <bpmn:documentation>acknowledgement, and duty report, proof of payment</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Month" label="Month (e.g. Jan 20xx)" type="string" />
+          <camunda:formField id="QuarterlyReporting" label="Quarterly reporting?" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0fz4w2p</bpmn:incoming>
+      <bpmn:outgoing>Flow_18nac3l</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1xa1dmh" name="Duty submission complete">
+      <bpmn:incoming>Flow_18nac3l</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:textAnnotation id="TextAnnotation_12klaxg">
+      <bpmn:text>Email sent via:
+- x-ia@deriv.com
+- compliance@deriv.com</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0e561lc" sourceRef="Activity_0pzwz2h" targetRef="TextAnnotation_12klaxg" />
+    <bpmn:textAnnotation id="TextAnnotation_0qyj9po">
+      <bpmn:text>Payment is made via credit card. 
+
+Attachments sent to Accounts after duty submission:
+- Duty acknowledgement
+- Proof of payment</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_09u21tx" sourceRef="Activity_1r4n9vv" targetRef="TextAnnotation_0qyj9po" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0a6ktf3">
+      <bpmndi:BPMNShape id="Participant_1f04dny_di" bpmnElement="Participant_1f04dny" isHorizontal="true">
+        <dc:Bounds x="160" y="40" width="1215" height="700" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0mwjs3v_di" bpmnElement="Lane_0mwjs3v" isHorizontal="true">
+        <dc:Bounds x="190" y="40" width="1180" height="230" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0cxfsd1_di" bpmnElement="Lane_0cxfsd1" isHorizontal="true">
+        <dc:Bounds x="190" y="270" width="1180" height="290" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1egvrhv_di" bpmnElement="Lane_1egvrhv" isHorizontal="true">
+        <dc:Bounds x="190" y="560" width="1180" height="180" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0qvvawb_di" bpmnElement="Flow_0qvvawb">
+        <di:waypoint x="870" y="170" />
+        <di:waypoint x="922" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0fz4w2p_di" bpmnElement="Flow_0fz4w2p">
+        <di:waypoint x="820" y="520" />
+        <di:waypoint x="820" y="610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07s2t9s_di" bpmnElement="Flow_07s2t9s">
+        <di:waypoint x="610" y="390" />
+        <di:waypoint x="610" y="480" />
+        <di:waypoint x="770" y="480" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="666" y="486" width="48" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1l0c9y5_di" bpmnElement="Flow_1l0c9y5">
+        <di:waypoint x="820" y="310" />
+        <di:waypoint x="820" y="210" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05ltvj5_di" bpmnElement="Flow_05ltvj5">
+        <di:waypoint x="660" y="350" />
+        <di:waypoint x="770" y="350" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="684" y="356" width="63" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_18nac3l_di" bpmnElement="Flow_18nac3l">
+        <di:waypoint x="870" y="650" />
+        <di:waypoint x="1040" y="650" />
+        <di:waypoint x="1040" y="188" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qw4imm_di" bpmnElement="Flow_0qw4imm">
+        <di:waypoint x="610" y="220" />
+        <di:waypoint x="610" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qlg06u_di" bpmnElement="Flow_0qlg06u">
+        <di:waypoint x="288" y="180" />
+        <di:waypoint x="370" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07s5l7h_di" bpmnElement="Flow_07s5l7h">
+        <di:waypoint x="470" y="180" />
+        <di:waypoint x="560" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0pzwz2h_di" bpmnElement="Activity_0pzwz2h">
+        <dc:Bounds x="560" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0x537zu_di" bpmnElement="Activity_0x537zu">
+        <dc:Bounds x="370" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0m0t6mp_di" bpmnElement="Event_0m0t6mp">
+        <dc:Bounds x="252" y="162" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="232" y="205" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0e9bkvp_di" bpmnElement="Activity_0e9bkvp">
+        <dc:Bounds x="770" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0yvlsh9_di" bpmnElement="Activity_0yvlsh9">
+        <dc:Bounds x="560" y="310" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ub8x8y_di" bpmnElement="Activity_0ub8x8y">
+        <dc:Bounds x="770" y="440" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ctt6oi_di" bpmnElement="Activity_1ctt6oi">
+        <dc:Bounds x="770" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1y7kmil_di" bpmnElement="Event_1y7kmil">
+        <dc:Bounds x="922" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="901" y="195" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1r4n9vv_di" bpmnElement="Activity_1r4n9vv">
+        <dc:Bounds x="770" y="610" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1xa1dmh_di" bpmnElement="Event_1xa1dmh">
+        <dc:Bounds x="1022" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1002" y="122" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_12klaxg_di" bpmnElement="TextAnnotation_12klaxg">
+        <dc:Bounds x="490" y="60" width="150" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0qyj9po_di" bpmnElement="TextAnnotation_0qyj9po">
+        <dc:Bounds x="540" y="570" width="210" height="96" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0e561lc_di" bpmnElement="Association_0e561lc">
+        <di:waypoint x="583" y="140" />
+        <di:waypoint x="563" y="110" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_09u21tx_di" bpmnElement="Association_09u21tx">
+        <di:waypoint x="770" y="635" />
+        <di:waypoint x="750" y="629" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

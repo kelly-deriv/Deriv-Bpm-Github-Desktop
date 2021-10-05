@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_11jzv80" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_0tffkv5">
+    <bpmn:participant id="Participant_046yg4p" name="Accounts - VAT Reporting (Paraguay)" processRef="VAT_Reporting_Paraguay">
+      <bpmn:documentation>VAT reporting for Paraguay is done Monthly</bpmn:documentation>
+    </bpmn:participant>
+  </bpmn:collaboration>
+  <bpmn:process id="VAT_Reporting_Paraguay" name="Accounts - VAT Reporting (Paraguay)" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1n6ead2">
+      <bpmn:lane id="Lane_0yr1szl" name="Accounts">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>step13</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_16br29q</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" name="Received VAT report prepared by Amaral" camunda:initiator="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingmonth" label="VAT Reporting Month (e.g July 20xx)" type="string" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, VATreportingmonth)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_06m9odv</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_06m9odv" sourceRef="StartEvent_1" targetRef="step13" />
+    <bpmn:userTask id="step13" name="Verify VAT report based on Accounts record and update Xero and store information into Dropbox" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingmonth" label="VAT Reporting Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_06m9odv</bpmn:incoming>
+      <bpmn:outgoing>Flow_016a5lh</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_16br29q" name="VAT Reporting ends">
+      <bpmn:incoming>Flow_016a5lh</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_016a5lh" sourceRef="step13" targetRef="Event_16br29q" />
+    <bpmn:textAnnotation id="TextAnnotation_1muedp8">
+      <bpmn:text>VAT report is submitted by Amaral to Undersecretary of State for Taxation</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0wb4xkv" sourceRef="step13" targetRef="TextAnnotation_1muedp8" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0tffkv5">
+      <bpmndi:BPMNShape id="Participant_046yg4p_di" bpmnElement="Participant_046yg4p" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="460" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0yr1szl_di" bpmnElement="Lane_0yr1szl" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="430" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_016a5lh_di" bpmnElement="Flow_016a5lh">
+        <di:waypoint x="450" y="220" />
+        <di:waypoint x="512" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06m9odv_di" bpmnElement="Flow_06m9odv">
+        <di:waypoint x="288" y="220" />
+        <di:waypoint x="350" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="252" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="233" y="245" width="76" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yh751b_di" bpmnElement="step13" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="350" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_16br29q_di" bpmnElement="Event_16br29q">
+        <dc:Bounds x="512" y="202" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="495" y="245" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1muedp8_di" bpmnElement="TextAnnotation_1muedp8">
+        <dc:Bounds x="308" y="100" width="160" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0wb4xkv_di" bpmnElement="Association_0wb4xkv">
+        <di:waypoint x="360" y="180" />
+        <di:waypoint x="355" y="150" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

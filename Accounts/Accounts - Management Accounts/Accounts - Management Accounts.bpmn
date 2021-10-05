@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_01ee13j" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_0ft58b8">
+    <bpmn:participant id="Participant_0e8sk8n" name="Accounts - Management Accounts" processRef="Management_Accounts" />
+  </bpmn:collaboration>
+  <bpmn:process id="Management_Accounts" name="Accounts - Management Accounts" isExecutable="true">
+    <bpmn:task id="Activity_0i49um7" name="Send PDF and Excel report to Management">
+      <bpmn:incoming>Flow_05ppvtf</bpmn:incoming>
+      <bpmn:incoming>Flow_11lzky0</bpmn:incoming>
+      <bpmn:outgoing>Flow_1d2e65i</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_03hsgw9" name="Management Accounts completed">
+      <bpmn:incoming>Flow_1d2e65i</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_1" name="Individual company closing done">
+      <bpmn:outgoing>Flow_0p6i3gl</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1v66pwp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_13i37n5" name="Lock accounting period and verify that transactions are correctly captured">
+      <bpmn:documentation>We have to go through whether all fixed asset entries are done, depreciation being accounted for, service fees calculations are right, tax is accounted for, accounts are grouped correctly in Xero, etc. Then we lock the period in Xero so that no further entries can be made before we refresh Fathom so that there won’t be any discrepancy.</bpmn:documentation>
+      <bpmn:incoming>Flow_0ny7e1o</bpmn:incoming>
+      <bpmn:incoming>Flow_0gfa0hd</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rlr5m3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_14g6w31</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1f9hg5l</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0qq0kr8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1nlbmia</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0kzomw7" name="Calculate Trading Platform Cost in spreadsheet and input into Xero">
+      <bpmn:incoming>Flow_0p6i3gl</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gfa0hd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_00zvoza" name="Match Inter-Group Journal transactions and correct loan entries in Xero if necessary">
+      <bpmn:incoming>Flow_1v66pwp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ny7e1o</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0zx2498" name="Update client KPI figures in Fathom">
+      <bpmn:incoming>Flow_14g6w31</bpmn:incoming>
+      <bpmn:outgoing>Flow_1diodgb</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1hc9tvu" name="Update IFRS 16 leases adjustment in Fathom">
+      <bpmn:incoming>Flow_0rlr5m3</bpmn:incoming>
+      <bpmn:outgoing>Flow_1g4dzhw</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_05vxry1" name="Generate Forex Report from Xero">
+      <bpmn:incoming>Flow_1nlbmia</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f3a4la</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:callActivity id="Activity_0p2slop" name="Cloud Expense Report" calledElement="Cloud Expense Report">
+      <bpmn:incoming>Flow_1f9hg5l</bpmn:incoming>
+    </bpmn:callActivity>
+    <bpmn:callActivity id="Activity_0phqgp1" name="Client Reconciliation" calledElement="Client Reconciliation">
+      <bpmn:incoming>Flow_0qq0kr8</bpmn:incoming>
+    </bpmn:callActivity>
+    <bpmn:task id="Activity_04ejlq8" name="Refresh to update companies&#39; data in Fathom">
+      <bpmn:incoming>Flow_1g4dzhw</bpmn:incoming>
+      <bpmn:incoming>Flow_1diodgb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1nup13w</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1yqe39f" name="Update Excel Elimination File">
+      <bpmn:documentation>File records adjustments at group level</bpmn:documentation>
+      <bpmn:incoming>Flow_1nup13w</bpmn:incoming>
+      <bpmn:outgoing>Flow_0raejhu</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0iik38p" name="Generate Fathom Group consolidation report">
+      <bpmn:incoming>Flow_0raejhu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cmdo28</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_0soacpe" name="Perform management accounts checks">
+      <bpmn:incoming>Flow_0f3a4la</bpmn:incoming>
+      <bpmn:incoming>Flow_1cmdo28</bpmn:incoming>
+      <bpmn:outgoing>Flow_05ppvtf</bpmn:outgoing>
+      <bpmn:outgoing>Flow_15ivb0f</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Activity_0nh1ubu" name="Make necessary corrections to report / entries and regenerate necessary reports">
+      <bpmn:incoming>Flow_15ivb0f</bpmn:incoming>
+      <bpmn:outgoing>Flow_11lzky0</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1g4dzhw" sourceRef="Activity_1hc9tvu" targetRef="Activity_04ejlq8" />
+    <bpmn:sequenceFlow id="Flow_0p6i3gl" sourceRef="StartEvent_1" targetRef="Activity_0kzomw7" />
+    <bpmn:sequenceFlow id="Flow_15ivb0f" name="Accounts do not tie" sourceRef="Gateway_0soacpe" targetRef="Activity_0nh1ubu">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">xxy</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1nup13w" sourceRef="Activity_04ejlq8" targetRef="Activity_1yqe39f" />
+    <bpmn:sequenceFlow id="Flow_1cmdo28" sourceRef="Activity_0iik38p" targetRef="Gateway_0soacpe" />
+    <bpmn:sequenceFlow id="Flow_0f3a4la" sourceRef="Activity_05vxry1" targetRef="Gateway_0soacpe" />
+    <bpmn:sequenceFlow id="Flow_0rlr5m3" sourceRef="Activity_13i37n5" targetRef="Activity_1hc9tvu" />
+    <bpmn:sequenceFlow id="Flow_05ppvtf" name="Accounts tie" sourceRef="Gateway_0soacpe" targetRef="Activity_0i49um7" />
+    <bpmn:sequenceFlow id="Flow_1d2e65i" sourceRef="Activity_0i49um7" targetRef="Event_03hsgw9" />
+    <bpmn:sequenceFlow id="Flow_0raejhu" sourceRef="Activity_1yqe39f" targetRef="Activity_0iik38p" />
+    <bpmn:sequenceFlow id="Flow_1v66pwp" sourceRef="StartEvent_1" targetRef="Activity_00zvoza" />
+    <bpmn:sequenceFlow id="Flow_0ny7e1o" sourceRef="Activity_00zvoza" targetRef="Activity_13i37n5" />
+    <bpmn:sequenceFlow id="Flow_0gfa0hd" sourceRef="Activity_0kzomw7" targetRef="Activity_13i37n5" />
+    <bpmn:sequenceFlow id="Flow_14g6w31" sourceRef="Activity_13i37n5" targetRef="Activity_0zx2498" />
+    <bpmn:sequenceFlow id="Flow_1diodgb" sourceRef="Activity_0zx2498" targetRef="Activity_04ejlq8" />
+    <bpmn:sequenceFlow id="Flow_11lzky0" sourceRef="Activity_0nh1ubu" targetRef="Activity_0i49um7" />
+    <bpmn:sequenceFlow id="Flow_1f9hg5l" name="Generate Expenses Report from Xero" sourceRef="Activity_13i37n5" targetRef="Activity_0p2slop" />
+    <bpmn:sequenceFlow id="Flow_0qq0kr8" name="Generate Xero Client Report" sourceRef="Activity_13i37n5" targetRef="Activity_0phqgp1" />
+    <bpmn:sequenceFlow id="Flow_1nlbmia" sourceRef="Activity_13i37n5" targetRef="Activity_05vxry1" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ft58b8">
+      <bpmndi:BPMNShape id="Participant_0e8sk8n_di" bpmnElement="Participant_0e8sk8n" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="2110" height="780" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1nlbmia_di" bpmnElement="Flow_1nlbmia">
+        <di:waypoint x="770" y="470" />
+        <di:waypoint x="880" y="470" />
+        <di:waypoint x="880" y="170" />
+        <di:waypoint x="990" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qq0kr8_di" bpmnElement="Flow_0qq0kr8">
+        <di:waypoint x="770" y="470" />
+        <di:waypoint x="880" y="470" />
+        <di:waypoint x="880" y="770" />
+        <di:waypoint x="990" y="770" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="893" y="736" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1f9hg5l_di" bpmnElement="Flow_1f9hg5l">
+        <di:waypoint x="770" y="470" />
+        <di:waypoint x="880" y="470" />
+        <di:waypoint x="880" y="620" />
+        <di:waypoint x="990" y="620" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="887" y="580" width="85" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11lzky0_di" bpmnElement="Flow_11lzky0">
+        <di:waypoint x="1810" y="770" />
+        <di:waypoint x="2050" y="770" />
+        <di:waypoint x="2050" y="510" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1diodgb_di" bpmnElement="Flow_1diodgb">
+        <di:waypoint x="1090" y="470" />
+        <di:waypoint x="1180" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_14g6w31_di" bpmnElement="Flow_14g6w31">
+        <di:waypoint x="770" y="470" />
+        <di:waypoint x="990" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gfa0hd_di" bpmnElement="Flow_0gfa0hd">
+        <di:waypoint x="490" y="380" />
+        <di:waypoint x="550" y="380" />
+        <di:waypoint x="550" y="470" />
+        <di:waypoint x="670" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ny7e1o_di" bpmnElement="Flow_0ny7e1o">
+        <di:waypoint x="490" y="560" />
+        <di:waypoint x="550" y="560" />
+        <di:waypoint x="550" y="470" />
+        <di:waypoint x="670" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1v66pwp_di" bpmnElement="Flow_1v66pwp">
+        <di:waypoint x="288" y="470" />
+        <di:waypoint x="330" y="470" />
+        <di:waypoint x="330" y="560" />
+        <di:waypoint x="390" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0raejhu_di" bpmnElement="Flow_0raejhu">
+        <di:waypoint x="1470" y="470" />
+        <di:waypoint x="1550" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1d2e65i_di" bpmnElement="Flow_1d2e65i">
+        <di:waypoint x="2100" y="470" />
+        <di:waypoint x="2172" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05ppvtf_di" bpmnElement="Flow_05ppvtf">
+        <di:waypoint x="1785" y="470" />
+        <di:waypoint x="2000" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1864" y="452" width="60" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rlr5m3_di" bpmnElement="Flow_0rlr5m3">
+        <di:waypoint x="770" y="470" />
+        <di:waypoint x="880" y="470" />
+        <di:waypoint x="880" y="320" />
+        <di:waypoint x="990" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f3a4la_di" bpmnElement="Flow_0f3a4la">
+        <di:waypoint x="1090" y="170" />
+        <di:waypoint x="1760" y="170" />
+        <di:waypoint x="1760" y="445" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cmdo28_di" bpmnElement="Flow_1cmdo28">
+        <di:waypoint x="1650" y="470" />
+        <di:waypoint x="1735" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1nup13w_di" bpmnElement="Flow_1nup13w">
+        <di:waypoint x="1280" y="470" />
+        <di:waypoint x="1370" y="470" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_15ivb0f_di" bpmnElement="Flow_15ivb0f">
+        <di:waypoint x="1760" y="495" />
+        <di:waypoint x="1760" y="730" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1770" y="686" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0p6i3gl_di" bpmnElement="Flow_0p6i3gl">
+        <di:waypoint x="288" y="470" />
+        <di:waypoint x="329" y="470" />
+        <di:waypoint x="329" y="380" />
+        <di:waypoint x="390" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1g4dzhw_di" bpmnElement="Flow_1g4dzhw">
+        <di:waypoint x="1090" y="320" />
+        <di:waypoint x="1230" y="320" />
+        <di:waypoint x="1230" y="430" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0i49um7_di" bpmnElement="Activity_0i49um7">
+        <dc:Bounds x="2000" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_03hsgw9_di" bpmnElement="Event_03hsgw9">
+        <dc:Bounds x="2172" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2158" y="495" width="65" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="252" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="229" y="510" width="82" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13i37n5_di" bpmnElement="Activity_13i37n5">
+        <dc:Bounds x="670" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kzomw7_di" bpmnElement="Activity_0kzomw7">
+        <dc:Bounds x="390" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00zvoza_di" bpmnElement="Activity_00zvoza">
+        <dc:Bounds x="390" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zx2498_di" bpmnElement="Activity_0zx2498">
+        <dc:Bounds x="990" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1hc9tvu_di" bpmnElement="Activity_1hc9tvu">
+        <dc:Bounds x="990" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_05vxry1_di" bpmnElement="Activity_05vxry1">
+        <dc:Bounds x="990" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0p4znl9_di" bpmnElement="Activity_0p2slop">
+        <dc:Bounds x="990" y="580" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02k5prz_di" bpmnElement="Activity_0phqgp1">
+        <dc:Bounds x="990" y="730" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04ejlq8_di" bpmnElement="Activity_04ejlq8">
+        <dc:Bounds x="1180" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1yqe39f_di" bpmnElement="Activity_1yqe39f" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="1370" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0iik38p_di" bpmnElement="Activity_0iik38p">
+        <dc:Bounds x="1550" y="430" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0soacpe_di" bpmnElement="Gateway_0soacpe" isMarkerVisible="true">
+        <dc:Bounds x="1735" y="445" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1719" y="505" width="82" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nh1ubu_di" bpmnElement="Activity_0nh1ubu">
+        <dc:Bounds x="1710" y="730" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

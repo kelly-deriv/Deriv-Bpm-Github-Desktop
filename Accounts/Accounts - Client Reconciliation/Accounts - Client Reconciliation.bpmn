@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_12033i4" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_1lb1raq">
+    <bpmn:participant id="Participant_08n3cki" name="Accounts - Clients Reconciliation" processRef="Accounts_Clients_Reconciliation" />
+  </bpmn:collaboration>
+  <bpmn:process id="Accounts_Clients_Reconciliation" name="Accounts - Clients Reconciliation" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1ccz1m2">
+      <bpmn:lane id="Lane_113lrzt" name="Payments">
+        <bpmn:flowNodeRef>Activity_0hu16mg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_03n7f2d</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1q1fleh</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1x9buxg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_15e2n3b</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0ibmie4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0i2n196</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:task id="Activity_0hu16mg" name="Match BackOffice debit/credit amounts against Xero">
+      <bpmn:incoming>Flow_0vsxfcx</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mun5n7</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1x3qkni</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_03n7f2d" name="Identify source of variance (time difference between BO/Xero, entry error, etc)">
+      <bpmn:incoming>Flow_0mun5n7</bpmn:incoming>
+      <bpmn:incoming>Flow_1psvtxb</bpmn:incoming>
+      <bpmn:outgoing>Flow_0tipql5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1q1fleh" name="Upload transaction data from BackOffice and Xero into Tableau using BigQuery">
+      <bpmn:documentation>Transactions in BO are detailed, Xero is summarised as there is too much data if it goes by BO txn</bpmn:documentation>
+      <bpmn:incoming>Flow_188z3tv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vsxfcx</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1x9buxg" name="Make journal adjustments in Xero to reconcile amount">
+      <bpmn:incoming>Flow_1yksvn4</bpmn:incoming>
+      <bpmn:outgoing>Flow_0307ztm</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_15e2n3b" name="Update reconciliation sheet in Google Drive">
+      <bpmn:incoming>Flow_0tipql5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yksvn4</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0ibmie4" name="Match Closing Balance of the Month with the Opening Balance of the new month">
+      <bpmn:incoming>Flow_1x3qkni</bpmn:incoming>
+      <bpmn:incoming>Flow_0307ztm</bpmn:incoming>
+      <bpmn:outgoing>Flow_1psvtxb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1aaulpi</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_0i2n196" name="End of Process">
+      <bpmn:incoming>Flow_1aaulpi</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:startEvent id="StartEvent_1" name="Initiate monthly client account reconciliation">
+      <bpmn:outgoing>Flow_188z3tv</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0307ztm" sourceRef="Activity_1x9buxg" targetRef="Activity_0ibmie4" />
+    <bpmn:sequenceFlow id="Flow_0tipql5" sourceRef="Activity_03n7f2d" targetRef="Activity_15e2n3b" />
+    <bpmn:sequenceFlow id="Flow_1yksvn4" sourceRef="Activity_15e2n3b" targetRef="Activity_1x9buxg" />
+    <bpmn:sequenceFlow id="Flow_1aaulpi" name="CB/OB matches" sourceRef="Activity_0ibmie4" targetRef="Event_0i2n196">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">cc</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1x3qkni" name="No variance" sourceRef="Activity_0hu16mg" targetRef="Activity_0ibmie4">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">bb</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1psvtxb" name="CB/OB does not match" sourceRef="Activity_0ibmie4" targetRef="Activity_03n7f2d">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">dd</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0mun5n7" name="Has variance" sourceRef="Activity_0hu16mg" targetRef="Activity_03n7f2d">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0vsxfcx" sourceRef="Activity_1q1fleh" targetRef="Activity_0hu16mg" />
+    <bpmn:sequenceFlow id="Flow_188z3tv" sourceRef="StartEvent_1" targetRef="Activity_1q1fleh" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1lb1raq">
+      <bpmndi:BPMNShape id="Participant_08n3cki_di" bpmnElement="Participant_08n3cki" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1340" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_113lrzt_di" bpmnElement="Lane_113lrzt" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1310" height="270" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0307ztm_di" bpmnElement="Flow_0307ztm">
+        <di:waypoint x="1150" y="227" />
+        <di:waypoint x="1210" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tipql5_di" bpmnElement="Flow_0tipql5">
+        <di:waypoint x="800" y="227" />
+        <di:waypoint x="870" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yksvn4_di" bpmnElement="Flow_1yksvn4">
+        <di:waypoint x="970" y="227" />
+        <di:waypoint x="1050" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1aaulpi_di" bpmnElement="Flow_1aaulpi">
+        <di:waypoint x="1310" y="227" />
+        <di:waypoint x="1412" y="227" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1320" y="208" width="79" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x3qkni_di" bpmnElement="Flow_1x3qkni">
+        <di:waypoint x="560" y="187" />
+        <di:waypoint x="560" y="120" />
+        <di:waypoint x="1260" y="120" />
+        <di:waypoint x="1260" y="187" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="573" y="143" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1psvtxb_di" bpmnElement="Flow_1psvtxb">
+        <di:waypoint x="1260" y="267" />
+        <di:waypoint x="1260" y="320" />
+        <di:waypoint x="750" y="320" />
+        <di:waypoint x="750" y="267" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1160" y="286" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mun5n7_di" bpmnElement="Flow_0mun5n7">
+        <di:waypoint x="610" y="227" />
+        <di:waypoint x="700" y="227" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="623" y="209" width="65" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vsxfcx_di" bpmnElement="Flow_0vsxfcx">
+        <di:waypoint x="450" y="227" />
+        <di:waypoint x="510" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_188z3tv_di" bpmnElement="Flow_188z3tv">
+        <di:waypoint x="288" y="227" />
+        <di:waypoint x="350" y="227" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0hu16mg_di" bpmnElement="Activity_0hu16mg">
+        <dc:Bounds x="510" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_03n7f2d_di" bpmnElement="Activity_03n7f2d">
+        <dc:Bounds x="700" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1q1fleh_di" bpmnElement="Activity_1q1fleh" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="350" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1x9buxg_di" bpmnElement="Activity_1x9buxg">
+        <dc:Bounds x="1050" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15e2n3b_di" bpmnElement="Activity_15e2n3b">
+        <dc:Bounds x="870" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ibmie4_di" bpmnElement="Activity_0ibmie4">
+        <dc:Bounds x="1210" y="187" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0i2n196_di" bpmnElement="Event_0i2n196">
+        <dc:Bounds x="1412" y="209" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1393" y="252" width="75" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="252" y="209" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="252" width="74" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

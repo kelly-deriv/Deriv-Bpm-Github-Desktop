@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_11jzv80" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_0tffkv5">
+    <bpmn:participant id="Participant_046yg4p" name="Accounts - VAT Reporting (Dubai)" processRef="VAT_Reporting_Dubai">
+      <bpmn:documentation>VAT reporting for Dubai is done Quarterly</bpmn:documentation>
+    </bpmn:participant>
+  </bpmn:collaboration>
+  <bpmn:process id="VAT_Reporting_Dubai" name="Accounts - VAT Reporting (Dubai)" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1n6ead2">
+      <bpmn:lane id="Lane_1uypiwo" name="Accounts - Team Lead/ Verifier">
+        <bpmn:flowNodeRef>Activity_0spkmb2</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0yr1szl" name="Accounts">
+        <bpmn:flowNodeRef>Activity_1c1h25x</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_13ncifp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_09qra4a</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1vr5suj</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0b0tawi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_16br29q</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:sequenceFlow id="Flow_02dtp60" name="Amendment not required" sourceRef="Activity_0spkmb2" targetRef="Activity_13ncifp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!Amendmentrequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Activity_1c1h25x" name="Verify amounts in invoices and update VAT report working spreadsheet">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingperiod" label="VAT reporting period" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_10qk9f7</bpmn:incoming>
+      <bpmn:incoming>Flow_1c9d9zm</bpmn:incoming>
+      <bpmn:outgoing>Flow_0imftcx</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_1" name="Download relevant period VAT report from Xero" camunda:initiator="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingperiod" label="VAT reporting period (e.g April to June 20xx)" type="string" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, VATreportingperiod)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_10qk9f7</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_10qk9f7" sourceRef="StartEvent_1" targetRef="Activity_1c1h25x" />
+    <bpmn:sequenceFlow id="Flow_0imftcx" sourceRef="Activity_1c1h25x" targetRef="Activity_0spkmb2" />
+    <bpmn:sequenceFlow id="Flow_0mr4d4w" name="Not eligible to claim refund" sourceRef="Activity_13ncifp" targetRef="Event_16br29q">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${Noteligibletoclaimrefund}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1c9d9zm" name="Amendment required" sourceRef="Activity_0spkmb2" targetRef="Activity_1c1h25x">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${Amendmentrequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Activity_13ncifp" name="Submit VAT report to United Arab Emirates Federal Tax Authority online portal and receive acknowledgement email" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingperiod" label="VAT reporting period" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Noteligibletoclaimrefund" label="Not eligible to claim refund" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_02dtp60</bpmn:incoming>
+      <bpmn:outgoing>Flow_0mr4d4w</bpmn:outgoing>
+      <bpmn:outgoing>Flow_04hnt1g</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_04hnt1g" name="Eligible to claim refund" sourceRef="Activity_13ncifp" targetRef="Activity_09qra4a">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!Noteligibletoclaimrefund}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Activity_0spkmb2" name="Verify VAT report working spreadsheet" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingperiod" label="VAT reporting period" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Amendmentrequired" label="Amendment required" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0imftcx</bpmn:incoming>
+      <bpmn:outgoing>Flow_02dtp60</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1c9d9zm</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_09qra4a" name="Upload refund request into United Arab Emirates Federal Tax Authority online portal" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingperiod" label="VAT reporting period" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="VATrefundnotreceived" label="VAT refund not received within 4 months" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_04hnt1g</bpmn:incoming>
+      <bpmn:outgoing>Flow_0f1132l</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0m6j9jn</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1vr5suj" name="Call United Arab Emirates Federal Tax Authority to follow up on refund status" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingperiod" label="VAT reporting period" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0f1132l</bpmn:incoming>
+      <bpmn:outgoing>Flow_09vdp5p</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0b0tawi" name="Received credit advice from bank and update Xero and store submission information into Dropbox" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="VATreportingperiod" label="VAT reporting period" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0m6j9jn</bpmn:incoming>
+      <bpmn:incoming>Flow_09vdp5p</bpmn:incoming>
+      <bpmn:outgoing>Flow_016a5lh</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_16br29q" name="VAT Reporting ends">
+      <bpmn:incoming>Flow_016a5lh</bpmn:incoming>
+      <bpmn:incoming>Flow_0mr4d4w</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0f1132l" name="VAT refund not received within 4 months" sourceRef="Activity_09qra4a" targetRef="Activity_1vr5suj">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${VATrefundnotreceived}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0m6j9jn" name="VAT refund received within 4 months" sourceRef="Activity_09qra4a" targetRef="Activity_0b0tawi">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!VATrefundnotreceived}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_09vdp5p" sourceRef="Activity_1vr5suj" targetRef="Activity_0b0tawi" />
+    <bpmn:sequenceFlow id="Flow_016a5lh" sourceRef="Activity_0b0tawi" targetRef="Event_16br29q" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0tffkv5">
+      <bpmndi:BPMNShape id="Participant_046yg4p_di" bpmnElement="Participant_046yg4p" isHorizontal="true">
+        <dc:Bounds x="190" y="50" width="1310" height="450" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0yr1szl_di" bpmnElement="Lane_0yr1szl" isHorizontal="true">
+        <dc:Bounds x="220" y="50" width="1280" height="290" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1uypiwo_di" bpmnElement="Lane_1uypiwo" isHorizontal="true">
+        <dc:Bounds x="220" y="340" width="1280" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_016a5lh_di" bpmnElement="Flow_016a5lh">
+        <di:waypoint x="1370" y="177" />
+        <di:waypoint x="1422" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_09vdp5p_di" bpmnElement="Flow_09vdp5p">
+        <di:waypoint x="1210" y="177" />
+        <di:waypoint x="1270" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0m6j9jn_di" bpmnElement="Flow_0m6j9jn">
+        <di:waypoint x="940" y="217" />
+        <di:waypoint x="940" y="270" />
+        <di:waypoint x="1320" y="270" />
+        <di:waypoint x="1320" y="217" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="924" y="273" width="82" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0f1132l_di" bpmnElement="Flow_0f1132l">
+        <di:waypoint x="990" y="177" />
+        <di:waypoint x="1110" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1009" y="130" width="82" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_04hnt1g_di" bpmnElement="Flow_04hnt1g">
+        <di:waypoint x="760" y="177" />
+        <di:waypoint x="890" y="177" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="786" y="179" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1c9d9zm_di" bpmnElement="Flow_1c9d9zm">
+        <di:waypoint x="510" y="430" />
+        <di:waypoint x="420" y="430" />
+        <di:waypoint x="420" y="217" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="437" y="436" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mr4d4w_di" bpmnElement="Flow_0mr4d4w">
+        <di:waypoint x="710" y="137" />
+        <di:waypoint x="710" y="100" />
+        <di:waypoint x="1440" y="100" />
+        <di:waypoint x="1440" y="159" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="738" y="71" width="67" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0imftcx_di" bpmnElement="Flow_0imftcx">
+        <di:waypoint x="470" y="177" />
+        <di:waypoint x="560" y="177" />
+        <di:waypoint x="560" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10qk9f7_di" bpmnElement="Flow_10qk9f7">
+        <di:waypoint x="318" y="177" />
+        <di:waypoint x="370" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02dtp60_di" bpmnElement="Flow_02dtp60">
+        <di:waypoint x="610" y="430" />
+        <di:waypoint x="710" y="430" />
+        <di:waypoint x="710" y="217" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="621" y="436" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_1u8i6mo_di" bpmnElement="Activity_1c1h25x">
+        <dc:Bounds x="370" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="282" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="264" y="202" width="77" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0i4fmq4_di" bpmnElement="Activity_13ncifp" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="660" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06p2ww7_di" bpmnElement="Activity_0spkmb2">
+        <dc:Bounds x="510" y="390" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1p9ehvv_di" bpmnElement="Activity_09qra4a" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="890" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_12agtrd_di" bpmnElement="Activity_1vr5suj" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="1110" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ty81f4_di" bpmnElement="Activity_0b0tawi">
+        <dc:Bounds x="1270" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_16br29q_di" bpmnElement="Event_16br29q">
+        <dc:Bounds x="1422" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1405" y="202" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

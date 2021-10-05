@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0wt9o96" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
+  <bpmn:collaboration id="Collaboration_12zio3q">
+    <bpmn:participant id="Participant_09g3ll2" name="Accounts - Supplier Payments (non-MYR)" processRef="Supplier_Payments_NonMYR" />
+  </bpmn:collaboration>
+  <bpmn:process id="Supplier_Payments_NonMYR" name="Accounts - Supplier Payments (non-MYR)" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0ff45gv">
+      <bpmn:lane id="Lane_1stp233" name="Accounts">
+        <bpmn:flowNodeRef>Event_10w9583</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_028tvz2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_13e9m2c</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0ofu4pn</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0432db8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0weojq7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1pyxrq3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1j4fm4g</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_13vd88j</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0lwnkfw</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Event_10w9583" name="Invoice received via email">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="ITInvoice" label="IT-related invoice?" type="boolean" />
+          <camunda:formField id="DefaultSystem" label="Default system (N/A for non IT-related invoice)?" type="boolean" />
+          <camunda:formField id="Date" label="Date" type="date" />
+          <camunda:formField id="InvoiceName" label="Invoice Name (N/A for non IT-related invoice)" type="string" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1htsumx</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1hk9h1m</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_028tvz2" name="Obtain HOO approval via email (N/A for system)">
+      <bpmn:incoming>Flow_1htsumx</bpmn:incoming>
+      <bpmn:outgoing>Flow_1cunhln</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_13e9m2c" name="Create card in Supplier Payments Trello Board and perform double entry in Xero">
+      <bpmn:incoming>Flow_1cunhln</bpmn:incoming>
+      <bpmn:outgoing>Flow_0dwyj32</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0ofu4pn" name="Submit payment details in the bank portal and move Trello card from &#39;To Upload&#39; to &#39;To Verify&#39;">
+      <bpmn:incoming>Flow_0dwyj32</bpmn:incoming>
+      <bpmn:outgoing>Flow_1hkffah</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0432db8" name="Cross check upload details in the portal and move the card to &#39;To Authorise&#39;">
+      <bpmn:incoming>Flow_1hkffah</bpmn:incoming>
+      <bpmn:outgoing>Flow_17nzzmi</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0weojq7" name="Authorise payment in the bank portal and move the card to &#39;To Notify&#39;">
+      <bpmn:incoming>Flow_17nzzmi</bpmn:incoming>
+      <bpmn:outgoing>Flow_1r7eb35</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1pyxrq3" name="Email the proof of payment to the supplier and archive the Trello card">
+      <bpmn:incoming>Flow_1r7eb35</bpmn:incoming>
+      <bpmn:outgoing>Flow_1o6w5oi</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_1j4fm4g" name="Payment complete">
+      <bpmn:incoming>Flow_1o6w5oi</bpmn:incoming>
+      <bpmn:incoming>Flow_11rotzx</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_13vd88j" name="Perform double entry in Xero">
+      <bpmn:incoming>Flow_02b9i04</bpmn:incoming>
+      <bpmn:outgoing>Flow_11rotzx</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0lwnkfw" name="Cross check the invoice/receipt details and save it in dropbox">
+      <bpmn:documentation>When payment failed (email notification received)
+- Accounts will check the card balance and liaise with card issue for blocked cards.
+- Accounts will add a new card if necessary and inform supplier to retry
+- After retry is successful, receipt received via email</bpmn:documentation>
+      <bpmn:incoming>Flow_1hk9h1m</bpmn:incoming>
+      <bpmn:outgoing>Flow_02b9i04</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1cunhln" sourceRef="Activity_028tvz2" targetRef="Activity_13e9m2c" />
+    <bpmn:sequenceFlow id="Flow_11rotzx" sourceRef="Activity_13vd88j" targetRef="Event_1j4fm4g" />
+    <bpmn:sequenceFlow id="Flow_02b9i04" sourceRef="Activity_0lwnkfw" targetRef="Activity_13vd88j" />
+    <bpmn:sequenceFlow id="Flow_1hk9h1m" name="Auto credit card payments" sourceRef="Event_10w9583" targetRef="Activity_0lwnkfw" />
+    <bpmn:sequenceFlow id="Flow_1htsumx" name="Manual payments" sourceRef="Event_10w9583" targetRef="Activity_028tvz2" />
+    <bpmn:sequenceFlow id="Flow_17nzzmi" sourceRef="Activity_0432db8" targetRef="Activity_0weojq7" />
+    <bpmn:sequenceFlow id="Flow_0dwyj32" sourceRef="Activity_13e9m2c" targetRef="Activity_0ofu4pn" />
+    <bpmn:sequenceFlow id="Flow_1hkffah" sourceRef="Activity_0ofu4pn" targetRef="Activity_0432db8" />
+    <bpmn:sequenceFlow id="Flow_1r7eb35" sourceRef="Activity_0weojq7" targetRef="Activity_1pyxrq3" />
+    <bpmn:sequenceFlow id="Flow_1o6w5oi" sourceRef="Activity_1pyxrq3" targetRef="Event_1j4fm4g" />
+    <bpmn:textAnnotation id="TextAnnotation_1sekx3v">
+      <bpmn:text>Invoice received via:
+- it-admin@deriv.com (system related)
+- jy-invoices@deriv.com (system related)
+- x-acc@deriv.com (non-system related)</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1tb1jiv" sourceRef="Event_10w9583" targetRef="TextAnnotation_1sekx3v" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_12zio3q">
+      <bpmndi:BPMNShape id="Participant_09g3ll2_di" bpmnElement="Participant_09g3ll2" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1610" height="410" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1stp233_di" bpmnElement="Lane_1stp233" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1580" height="410" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1sekx3v_di" bpmnElement="TextAnnotation_1sekx3v">
+        <dc:Bounds x="325" y="110" width="260" height="70" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1cunhln_di" bpmnElement="Flow_1cunhln">
+        <di:waypoint x="570" y="240" />
+        <di:waypoint x="670" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_11rotzx_di" bpmnElement="Flow_11rotzx">
+        <di:waypoint x="770" y="395" />
+        <di:waypoint x="1690" y="395" />
+        <di:waypoint x="1690" y="258" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02b9i04_di" bpmnElement="Flow_02b9i04">
+        <di:waypoint x="570" y="395" />
+        <di:waypoint x="670" y="395" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hk9h1m_di" bpmnElement="Flow_1hk9h1m">
+        <di:waypoint x="335" y="258" />
+        <di:waypoint x="335" y="395" />
+        <di:waypoint x="470" y="395" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="361" y="396" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1htsumx_di" bpmnElement="Flow_1htsumx">
+        <di:waypoint x="353" y="240" />
+        <di:waypoint x="470" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="366" y="246" width="87" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17nzzmi_di" bpmnElement="Flow_17nzzmi">
+        <di:waypoint x="1170" y="240" />
+        <di:waypoint x="1280" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0dwyj32_di" bpmnElement="Flow_0dwyj32">
+        <di:waypoint x="770" y="240" />
+        <di:waypoint x="870" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1hkffah_di" bpmnElement="Flow_1hkffah">
+        <di:waypoint x="970" y="240" />
+        <di:waypoint x="1070" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1r7eb35_di" bpmnElement="Flow_1r7eb35">
+        <di:waypoint x="1380" y="240" />
+        <di:waypoint x="1490" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1o6w5oi_di" bpmnElement="Flow_1o6w5oi">
+        <di:waypoint x="1590" y="240" />
+        <di:waypoint x="1672" y="240" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_10w9583_di" bpmnElement="Event_10w9583">
+        <dc:Bounds x="317" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="230" y="227" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_028tvz2_di" bpmnElement="Activity_028tvz2">
+        <dc:Bounds x="470" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13e9m2c_di" bpmnElement="Activity_13e9m2c">
+        <dc:Bounds x="670" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ofu4pn_di" bpmnElement="Activity_0ofu4pn">
+        <dc:Bounds x="870" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0432db8_di" bpmnElement="Activity_0432db8">
+        <dc:Bounds x="1070" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0weojq7_di" bpmnElement="Activity_0weojq7">
+        <dc:Bounds x="1280" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pyxrq3_di" bpmnElement="Activity_1pyxrq3">
+        <dc:Bounds x="1490" y="200" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1j4fm4g_di" bpmnElement="Event_1j4fm4g">
+        <dc:Bounds x="1672" y="222" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1667" y="185" width="45" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13vd88j_di" bpmnElement="Activity_13vd88j">
+        <dc:Bounds x="670" y="355" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lwnkfw_di" bpmnElement="Activity_0lwnkfw">
+        <dc:Bounds x="470" y="355" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1tb1jiv_di" bpmnElement="Association_1tb1jiv">
+        <di:waypoint x="341" y="223" />
+        <di:waypoint x="356" y="180" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

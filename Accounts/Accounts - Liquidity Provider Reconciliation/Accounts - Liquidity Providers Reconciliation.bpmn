@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0co4ytf" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_16el78i">
+    <bpmn:participant id="Participant_0e2wzil" name="Accounts - Liquidity Providers Reconciliation" processRef="LP_Recon" />
+  </bpmn:collaboration>
+  <bpmn:process id="LP_Recon" name="Accounts - Liquidity Providers Reconciliation" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_03nn6k9">
+      <bpmn:lane id="Lane_1akcs3o" name="Internal Audit">
+        <bpmn:flowNodeRef>Activity_0a4iy4h</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0kmui0n</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_198l8f6" name="Trading">
+        <bpmn:flowNodeRef>Activity_0fwtr3t</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1rdx6ah</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_14mww1h" name="Accounts">
+        <bpmn:flowNodeRef>Activity_17wz6s7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0gk6azp</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_10oxn0l</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_01zzh1a</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:userTask id="Activity_0fwtr3t" name="Verify LP Account summary figures via email" camunda:candidateGroups="MT5Trading">
+      <bpmn:documentation>Check with Trading how they verify</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="LPReconmonth" label="LP Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Summarysheetinaccurate" label="LP Account summary spreadsheet needs amendments " type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03bvh4c</bpmn:incoming>
+      <bpmn:incoming>Flow_0lfj31z</bpmn:incoming>
+      <bpmn:outgoing>Flow_0evm0j8</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0mgf61j</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_17wz6s7" name="Make changes to LP Account summary spreadsheet" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="LPReconmonth" label="LP Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0evm0j8</bpmn:incoming>
+      <bpmn:outgoing>Flow_03bvh4c</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0gk6azp" name="Email IA LP Statements &#38; LP Account summary spreadsheet" camunda:candidateGroups="Accounts">
+      <bpmn:documentation>zipped folder</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="LPReconmonth" label="LP Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0mgf61j</bpmn:incoming>
+      <bpmn:outgoing>Flow_0gq638r</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0a4iy4h" name="Conduct LP Reconciliations and Commission Review and obtain justification (if required)" camunda:candidateGroups="IA">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="LPReconmonth" label="LP Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0gq638r</bpmn:incoming>
+      <bpmn:outgoing>Flow_172jbop</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:startEvent id="StartEvent_1" name="Initiate monthly LP reconciliation" camunda:initiator="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="LPReconmonth" label="LP Reconciliation Month (e.g May 20xx)" type="string" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, LPReconmonth)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_03ugxtz</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Activity_10oxn0l" name="Email Trading at 1st working day of the month to obtain LP Statements" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="LPReconmonth" label="LP Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03ugxtz</bpmn:incoming>
+      <bpmn:outgoing>Flow_03cjryu</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_01zzh1a" name="Prepare &#38; Email Trading team LP Account summary spreadsheet and update Xero" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="LPReconmonth" label="LP Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="CFH" label="CFH - Checked against Journal, SWAPS, Commission, and Gross P&#38;L" type="boolean" />
+          <camunda:formField id="B2broker" label="B2broker - Checked against Journal, SWAPS, Commission, and Gross P&#38;L" type="boolean" />
+          <camunda:formField id="FXopenXP" label="FXopenXP - Checked against Journal, SWAPS, Commission, and Gross P&#38;L" type="boolean" />
+          <camunda:formField id="FXopenUK" label="FXopenUK - Checked against Journal, SWAPS, Commission, and Gross P&#38;L" type="boolean" />
+          <camunda:formField id="TopFX" label="TopFX - Checked against Journal, SWAPS, Commission, and Gross P&#38;L" type="boolean" />
+          <camunda:formField id="GBEBrokers" label="GBEBrokers - Checked against Journal, SWAPS, Commission, and Gross P&#38;L" type="boolean" />
+          <camunda:formField id="XOpenHub" label="XOpenHub - Checked against Journal, SWAPS, Commission, and Gross P&#38;L" type="boolean" />
+          <camunda:formField id="Updatexero" label="Update Xero entries for all LPs" type="boolean" />
+          <camunda:formField id="EmailTrading" label="Email Trading team LP Account summary (screenshot)" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1gnfz06</bpmn:incoming>
+      <bpmn:outgoing>Flow_0lfj31z</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1rdx6ah" name="Email relevant LP data to Accounts and IA" camunda:candidateGroups="OptionsTradingOperations">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="LPReconmonth" label="LP Reconciliation Month" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="LPtoAccounts" label="LP statements to Accounts" type="boolean" />
+          <camunda:formField id="CFHtoIA" label="CFH volume report for IA" type="boolean" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_03cjryu</bpmn:incoming>
+      <bpmn:outgoing>Flow_1gnfz06</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_0gq638r" sourceRef="Activity_0gk6azp" targetRef="Activity_0a4iy4h" />
+    <bpmn:sequenceFlow id="Flow_172jbop" sourceRef="Activity_0a4iy4h" targetRef="Event_0kmui0n" />
+    <bpmn:sequenceFlow id="Flow_0mgf61j" name="Amendment not required" sourceRef="Activity_0fwtr3t" targetRef="Activity_0gk6azp">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!Summarysheetinaccurate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0evm0j8" name="Amendment required" sourceRef="Activity_0fwtr3t" targetRef="Activity_17wz6s7">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${Summarysheetinaccurate}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_03bvh4c" sourceRef="Activity_17wz6s7" targetRef="Activity_0fwtr3t" />
+    <bpmn:sequenceFlow id="Flow_0lfj31z" sourceRef="Activity_01zzh1a" targetRef="Activity_0fwtr3t" />
+    <bpmn:sequenceFlow id="Flow_03ugxtz" sourceRef="StartEvent_1" targetRef="Activity_10oxn0l" />
+    <bpmn:sequenceFlow id="Flow_03cjryu" sourceRef="Activity_10oxn0l" targetRef="Activity_1rdx6ah" />
+    <bpmn:sequenceFlow id="Flow_1gnfz06" sourceRef="Activity_1rdx6ah" targetRef="Activity_01zzh1a" />
+    <bpmn:endEvent id="Event_0kmui0n" name="LP Recon Ends">
+      <bpmn:incoming>Flow_172jbop</bpmn:incoming>
+    </bpmn:endEvent>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_16el78i">
+      <bpmndi:BPMNShape id="Participant_0e2wzil_di" bpmnElement="Participant_0e2wzil" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="1200" height="540" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_14mww1h_di" bpmnElement="Lane_14mww1h" isHorizontal="true">
+        <dc:Bounds x="190" y="100" width="1170" height="202" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_198l8f6_di" bpmnElement="Lane_198l8f6" isHorizontal="true">
+        <dc:Bounds x="190" y="302" width="1170" height="188" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1akcs3o_di" bpmnElement="Lane_1akcs3o" isHorizontal="true">
+        <dc:Bounds x="190" y="490" width="1170" height="150" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1gnfz06_di" bpmnElement="Flow_1gnfz06">
+        <di:waypoint x="470" y="390" />
+        <di:waypoint x="580" y="390" />
+        <di:waypoint x="580" y="217" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03cjryu_di" bpmnElement="Flow_03cjryu">
+        <di:waypoint x="420" y="217" />
+        <di:waypoint x="420" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03ugxtz_di" bpmnElement="Flow_03ugxtz">
+        <di:waypoint x="305" y="177" />
+        <di:waypoint x="370" y="177" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0lfj31z_di" bpmnElement="Flow_0lfj31z">
+        <di:waypoint x="630" y="177" />
+        <di:waypoint x="690" y="177" />
+        <di:waypoint x="690" y="390" />
+        <di:waypoint x="740" y="390" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_03bvh4c_di" bpmnElement="Flow_03bvh4c">
+        <di:waypoint x="840" y="177" />
+        <di:waypoint x="790" y="177" />
+        <di:waypoint x="790" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0evm0j8_di" bpmnElement="Flow_0evm0j8">
+        <di:waypoint x="840" y="390" />
+        <di:waypoint x="890" y="390" />
+        <di:waypoint x="890" y="217" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="900" y="356" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0mgf61j_di" bpmnElement="Flow_0mgf61j">
+        <di:waypoint x="790" y="430" />
+        <di:waypoint x="790" y="470" />
+        <di:waypoint x="1040" y="470" />
+        <di:waypoint x="1040" y="217" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="811" y="441" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_172jbop_di" bpmnElement="Flow_172jbop">
+        <di:waypoint x="1180" y="560" />
+        <di:waypoint x="1252" y="560" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1255" y="526" width="58" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gq638r_di" bpmnElement="Flow_0gq638r">
+        <di:waypoint x="1090" y="177" />
+        <di:waypoint x="1130" y="177" />
+        <di:waypoint x="1130" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0vizmsb_di" bpmnElement="Activity_0fwtr3t">
+        <dc:Bounds x="740" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0dunzzn_di" bpmnElement="Activity_17wz6s7">
+        <dc:Bounds x="840" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lrv54g_di" bpmnElement="Activity_0gk6azp">
+        <dc:Bounds x="990" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1gyo8xk_di" bpmnElement="Activity_0a4iy4h">
+        <dc:Bounds x="1080" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="269" y="159" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="247" y="202" width="81" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ajj3nt_di" bpmnElement="Activity_10oxn0l">
+        <dc:Bounds x="370" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19eu9fx_di" bpmnElement="Activity_01zzh1a">
+        <dc:Bounds x="530" y="137" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1juvswv_di" bpmnElement="Activity_1rdx6ah">
+        <dc:Bounds x="370" y="350" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0kmui0n_di" bpmnElement="Event_0kmui0n">
+        <dc:Bounds x="1252" y="542" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1231" y="518" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

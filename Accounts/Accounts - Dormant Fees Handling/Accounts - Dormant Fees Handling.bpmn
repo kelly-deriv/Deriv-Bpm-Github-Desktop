@@ -1,0 +1,419 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_1cibkfj" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_146t0ak">
+    <bpmn:participant id="Participant_0prwhsi" name="Accounts - Dormant Fees Handling" processRef="Dormant_Fees_Handling" />
+  </bpmn:collaboration>
+  <bpmn:process id="Dormant_Fees_Handling" name="Accounts - Dormant Fees Handling" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0cyk3nr">
+      <bpmn:lane id="Lane_0z1efq1" name="Accounts - Payment">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0tfwd6c</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1uvaqm8</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1gjq9ll</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1wp769g</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_158tdd9</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1di7hcu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1wtheun</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_02ealnz</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_14311xr</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_0tvesly</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1jylto6</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1rcd9da" name="Compliance">
+        <bpmn:flowNodeRef>Gateway_0782nij</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0n835i0</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1rz9hzr" name="Marketing">
+        <bpmn:flowNodeRef>Activity_1cl4rd4</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" name="Received automated email for CR,MLT,MF dormant fees report on 15th of every month" camunda:initiator="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, startperiod)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0w74ktn</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1m50lbo</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:parallelGateway id="Gateway_0782nij">
+      <bpmn:incoming>Flow_12j6hrk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1dqqoet</bpmn:outgoing>
+      <bpmn:outgoing>Flow_089yv1d</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Activity_0tfwd6c" name="Create trello card and perform refund to MGA accordingly (MLT)" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_17pthva</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zwgntc</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1cl4rd4" name="Notify client regarding dormant fee chargeable via email" camunda:candidateGroups="AffMktgOps">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1dqqoet</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cznnuo</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1uvaqm8" name="Generate and verify dormant fees report and email MX report to Marketing" camunda:candidateGroups="Accounts">
+      <bpmn:documentation>(MLT) - https://metabase.4x.my/question/1600?broker=MLT
+(CR,MF &amp; MX) - https://metabase-bi.4x.my/question/2155?srvname=CR</bpmn:documentation>
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0w74ktn</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qnqxth</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_1201rn4" name="MF &#38; MLT broker code" sourceRef="Gateway_1wp769g" targetRef="Activity_14311xr" />
+    <bpmn:sequenceFlow id="Flow_0sl9pdr" name="MX broker code" sourceRef="Gateway_1wp769g" targetRef="Activity_02ealnz" />
+    <bpmn:sequenceFlow id="Flow_16kru41" sourceRef="Activity_158tdd9" targetRef="Activity_1di7hcu" />
+    <bpmn:sequenceFlow id="Flow_1mbfveo" name="CR broker code" sourceRef="Gateway_1wp769g" targetRef="Activity_158tdd9" />
+    <bpmn:sequenceFlow id="Flow_0hmu3sk" sourceRef="Activity_14311xr" targetRef="Event_1wtheun" />
+    <bpmn:sequenceFlow id="Flow_0ulnw4h" sourceRef="Activity_1di7hcu" targetRef="Event_1wtheun" />
+    <bpmn:sequenceFlow id="Flow_1dqqoet" sourceRef="Gateway_0782nij" targetRef="Activity_1cl4rd4" />
+    <bpmn:sequenceFlow id="Flow_13tad0r" name="Clients without valid card" sourceRef="Activity_02ealnz" targetRef="Activity_14311xr" />
+    <bpmn:sequenceFlow id="Flow_12j6hrk" sourceRef="Activity_0n835i0" targetRef="Gateway_0782nij" />
+    <bpmn:sequenceFlow id="Flow_089yv1d" sourceRef="Gateway_0782nij" targetRef="Gateway_1gjq9ll" />
+    <bpmn:sequenceFlow id="Flow_0cznnuo" name="Debiting after 30 days from 20th of the month " sourceRef="Activity_1cl4rd4" targetRef="Gateway_0tvesly" />
+    <bpmn:sequenceFlow id="Flow_0zwgntc" sourceRef="Activity_0tfwd6c" targetRef="Gateway_0tvesly" />
+    <bpmn:sequenceFlow id="Flow_0ho3zy9" sourceRef="Gateway_0tvesly" targetRef="Activity_1jylto6" />
+    <bpmn:sequenceFlow id="Flow_1qnqxth" sourceRef="Activity_1uvaqm8" targetRef="Gateway_1gjq9ll" />
+    <bpmn:sequenceFlow id="Flow_17pthva" sourceRef="Gateway_1gjq9ll" targetRef="Activity_0tfwd6c" />
+    <bpmn:inclusiveGateway id="Gateway_1gjq9ll">
+      <bpmn:incoming>Flow_089yv1d</bpmn:incoming>
+      <bpmn:incoming>Flow_1qnqxth</bpmn:incoming>
+      <bpmn:outgoing>Flow_17pthva</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_0w74ktn" sourceRef="StartEvent_1" targetRef="Activity_1uvaqm8" />
+    <bpmn:sequenceFlow id="Flow_1m50lbo" sourceRef="StartEvent_1" targetRef="Activity_0n835i0" />
+    <bpmn:userTask id="Activity_0n835i0" name="Conduct analysis on MLT &#38; MF report and send instruction to Marketing and Accounts via email " camunda:candidateGroups="ComplianceMalta,ComplianceOps">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1m50lbo</bpmn:incoming>
+      <bpmn:outgoing>Flow_12j6hrk</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_17n3g5d" sourceRef="Activity_1jylto6" targetRef="Gateway_1wp769g" />
+    <bpmn:parallelGateway id="Gateway_1wp769g">
+      <bpmn:incoming>Flow_17n3g5d</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mbfveo</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0sl9pdr</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1201rn4</bpmn:outgoing>
+    </bpmn:parallelGateway>
+    <bpmn:userTask id="Activity_158tdd9" name="Email csv file to Back-end HOD to debit client account (CR)" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1mbfveo</bpmn:incoming>
+      <bpmn:outgoing>Flow_16kru41</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1di7hcu" name="Cross-check spreadsheet to identify accounts missed out from debiting and perform manual debit in BO (CR)" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_16kru41</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ulnw4h</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_1wtheun" name="Dormant fee debited from client accounts">
+      <bpmn:incoming>Flow_0ulnw4h</bpmn:incoming>
+      <bpmn:incoming>Flow_0hmu3sk</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_02ealnz" name="Manually refund to valid card via Premier Cashier (MX)" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0sl9pdr</bpmn:incoming>
+      <bpmn:outgoing>Flow_13tad0r</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_14311xr" name="Generate and key in DCC into BackOffice and debit client accounts (MF, MLT, MX)" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1201rn4</bpmn:incoming>
+      <bpmn:incoming>Flow_13tad0r</bpmn:incoming>
+      <bpmn:outgoing>Flow_0hmu3sk</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:inclusiveGateway id="Gateway_0tvesly">
+      <bpmn:incoming>Flow_0cznnuo</bpmn:incoming>
+      <bpmn:incoming>Flow_0zwgntc</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ho3zy9</bpmn:outgoing>
+    </bpmn:inclusiveGateway>
+    <bpmn:userTask id="Activity_1jylto6" name="Re-generate reports from Metabase and prepare &#38; verifiy batch csv files" camunda:candidateGroups="Accounts" camunda:dueDate="${dateTime().plusDays(35).toDate()}" camunda:followUpDate="${dateTime().plusDays(30).toDate()}">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="startperiod" label="Start Period" type="date">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="timeout" id="reminder-listener">
+          <bpmn:timerEventDefinition id="TimerEventDefinition_0qoy05w">
+            <bpmn:timeCycle xsi:type="bpmn:tFormalExpression">R/P1D</bpmn:timeCycle>
+          </bpmn:timerEventDefinition>
+        </camunda:taskListener>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ho3zy9</bpmn:incoming>
+      <bpmn:outgoing>Flow_17n3g5d</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:textAnnotation id="TextAnnotation_1ultsi7">
+      <bpmn:text>- Re-generate all broker codes report
+- Prepare &amp; verify batch csv files for each broker code</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_00sgiys" sourceRef="Activity_1jylto6" targetRef="TextAnnotation_1ultsi7" />
+    <bpmn:textAnnotation id="TextAnnotation_06pv5yd">
+      <bpmn:text>Inform client before 20th of every month</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0bu5qts" sourceRef="Activity_1cl4rd4" targetRef="TextAnnotation_06pv5yd" />
+    <bpmn:textAnnotation id="TextAnnotation_1uebqdh">
+      <bpmn:text>run script on production server to debit client account</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_01hbzeb" sourceRef="Activity_158tdd9" targetRef="TextAnnotation_1uebqdh" />
+    <bpmn:textAnnotation id="TextAnnotation_1d3k095">
+      <bpmn:text>- Generate and cross check all dormant fee    accounts report
+- Generate MX reports via Metabase</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0cgfil6" sourceRef="Activity_1uvaqm8" targetRef="TextAnnotation_1d3k095" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_146t0ak">
+      <bpmndi:BPMNShape id="Participant_0prwhsi_di" bpmnElement="Participant_0prwhsi" isHorizontal="true">
+        <dc:Bounds x="160" y="100" width="1510" height="910" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1rz9hzr_di" bpmnElement="Lane_1rz9hzr" isHorizontal="true">
+        <dc:Bounds x="190" y="790" width="1480" height="220" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1rcd9da_di" bpmnElement="Lane_1rcd9da" isHorizontal="true">
+        <dc:Bounds x="190" y="630" width="1480" height="160" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0z1efq1_di" bpmnElement="Lane_0z1efq1" isHorizontal="true">
+        <dc:Bounds x="190" y="100" width="1480" height="530" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1d3k095_di" bpmnElement="TextAnnotation_1d3k095">
+        <dc:Bounds x="315" y="223" width="250" height="53" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_17n3g5d_di" bpmnElement="Flow_17n3g5d">
+        <di:waypoint x="1020" y="360" />
+        <di:waypoint x="1115" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1m50lbo_di" bpmnElement="Flow_1m50lbo">
+        <di:waypoint x="278" y="360" />
+        <di:waypoint x="334" y="360" />
+        <di:waypoint x="334" y="710" />
+        <di:waypoint x="410" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0w74ktn_di" bpmnElement="Flow_0w74ktn">
+        <di:waypoint x="278" y="360" />
+        <di:waypoint x="390" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_17pthva_di" bpmnElement="Flow_17pthva">
+        <di:waypoint x="620" y="495" />
+        <di:waypoint x="620" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qnqxth_di" bpmnElement="Flow_1qnqxth">
+        <di:waypoint x="440" y="400" />
+        <di:waypoint x="440" y="520" />
+        <di:waypoint x="595" y="520" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ho3zy9_di" bpmnElement="Flow_0ho3zy9">
+        <di:waypoint x="815" y="360" />
+        <di:waypoint x="920" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zwgntc_di" bpmnElement="Flow_0zwgntc">
+        <di:waypoint x="670" y="360" />
+        <di:waypoint x="765" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cznnuo_di" bpmnElement="Flow_0cznnuo">
+        <di:waypoint x="670" y="940" />
+        <di:waypoint x="790" y="940" />
+        <di:waypoint x="790" y="385" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="800" y="496" width="86" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_089yv1d_di" bpmnElement="Flow_089yv1d">
+        <di:waypoint x="620" y="685" />
+        <di:waypoint x="620" y="545" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12j6hrk_di" bpmnElement="Flow_12j6hrk">
+        <di:waypoint x="510" y="710" />
+        <di:waypoint x="595" y="710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_13tad0r_di" bpmnElement="Flow_13tad0r" bioc:stroke="black" bioc:fill="white">
+        <di:waypoint x="1330" y="400" />
+        <di:waypoint x="1330" y="450" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1334" y="410" width="72" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1dqqoet_di" bpmnElement="Flow_1dqqoet">
+        <di:waypoint x="620" y="735" />
+        <di:waypoint x="620" y="900" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ulnw4h_di" bpmnElement="Flow_0ulnw4h">
+        <di:waypoint x="1530" y="290" />
+        <di:waypoint x="1530" y="352" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0hmu3sk_di" bpmnElement="Flow_0hmu3sk">
+        <di:waypoint x="1380" y="490" />
+        <di:waypoint x="1530" y="490" />
+        <di:waypoint x="1530" y="388" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mbfveo_di" bpmnElement="Flow_1mbfveo">
+        <di:waypoint x="1140" y="335" />
+        <di:waypoint x="1140" y="250" />
+        <di:waypoint x="1280" y="250" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1163" y="233" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_16kru41_di" bpmnElement="Flow_16kru41">
+        <di:waypoint x="1380" y="250" />
+        <di:waypoint x="1480" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0sl9pdr_di" bpmnElement="Flow_0sl9pdr">
+        <di:waypoint x="1165" y="360" />
+        <di:waypoint x="1280" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1167" y="333" width="78" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1201rn4_di" bpmnElement="Flow_1201rn4">
+        <di:waypoint x="1140" y="385" />
+        <di:waypoint x="1140" y="490" />
+        <di:waypoint x="1280" y="490" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1155" y="459" width="85" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="242" y="342" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="222" y="385" width="82" height="80" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0782nij_di" bpmnElement="Gateway_0782nij">
+        <dc:Bounds x="595" y="685" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0tfwd6c_di" bpmnElement="Activity_0tfwd6c">
+        <dc:Bounds x="570" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kyn4nk_di" bpmnElement="Activity_1cl4rd4">
+        <dc:Bounds x="570" y="900" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1l6fjpl_di" bpmnElement="Activity_1uvaqm8">
+        <dc:Bounds x="390" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0zbozzl_di" bpmnElement="Gateway_1gjq9ll">
+        <dc:Bounds x="595" y="495" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1ji6o7d_di" bpmnElement="Activity_0n835i0">
+        <dc:Bounds x="410" y="670" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0vhwmiq_di" bpmnElement="Gateway_1wp769g">
+        <dc:Bounds x="1115" y="335" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mku6bn_di" bpmnElement="Activity_158tdd9">
+        <dc:Bounds x="1280" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ojpjpo_di" bpmnElement="Activity_1di7hcu">
+        <dc:Bounds x="1480" y="210" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1wtheun_di" bpmnElement="Event_1wtheun">
+        <dc:Bounds x="1512" y="352" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1554" y="350" width="73" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1qsmurk_di" bpmnElement="Activity_02ealnz">
+        <dc:Bounds x="1280" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0y1wr9v_di" bpmnElement="Activity_14311xr">
+        <dc:Bounds x="1280" y="450" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1mct7nz_di" bpmnElement="Gateway_0tvesly">
+        <dc:Bounds x="765" y="335" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nzkh8v_di" bpmnElement="Activity_1jylto6">
+        <dc:Bounds x="920" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1ultsi7_di" bpmnElement="TextAnnotation_1ultsi7">
+        <dc:Bounds x="850" y="200" width="220" height="54" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_06pv5yd_di" bpmnElement="TextAnnotation_06pv5yd">
+        <dc:Bounds x="350" y="840" width="260" height="30" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1uebqdh_di" bpmnElement="TextAnnotation_1uebqdh">
+        <dc:Bounds x="1210" y="130" width="179.99162412252713" height="40.204211869814934" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_00sgiys_di" bpmnElement="Association_00sgiys">
+        <di:waypoint x="951" y="320" />
+        <di:waypoint x="919" y="254" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0bu5qts_di" bpmnElement="Association_0bu5qts">
+        <di:waypoint x="582" y="900" />
+        <di:waypoint x="554" y="870" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_01hbzeb_di" bpmnElement="Association_01hbzeb">
+        <di:waypoint x="1301" y="210" />
+        <di:waypoint x="1273" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0cgfil6_di" bpmnElement="Association_0cgfil6">
+        <di:waypoint x="403" y="320" />
+        <di:waypoint x="363" y="276" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
