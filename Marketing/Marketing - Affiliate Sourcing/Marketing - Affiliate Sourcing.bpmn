@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0u6dwy8" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:collaboration id="Collaboration_1nnugco">
+    <bpmn:participant id="Participant_1tjas86" name="Marketing - Affiliate Sourcing" processRef="Affiliate_Sourcing" />
+  </bpmn:collaboration>
+  <bpmn:process id="Affiliate_Sourcing" name="Marketing - Affiliate Sourcing" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_0sj3uzi">
+      <bpmn:lane id="Lane_16w9pxq" name="Global Partnerships">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_19hhp6n</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1n4cio4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_02b5e26</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_15mr1iu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_075qqzq</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1" name="New lead found from online or offline sources">
+      <bpmn:outgoing>Flow_0tg13am</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_19hhp6n" name="Add new lead to Close.io">
+      <bpmn:incoming>Flow_0tg13am</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tfsp7n</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1n4cio4" name="Send affiliate managers tracking link to the lead to pitch for Deriv partnership programmes via Close.io">
+      <bpmn:incoming>Flow_1tfsp7n</bpmn:incoming>
+      <bpmn:outgoing>Flow_1j3bhv3</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1eglusr</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_02b5e26" name="Schedule a series of follow up via email, Whatsapp or social media">
+      <bpmn:incoming>Flow_1j3bhv3</bpmn:incoming>
+      <bpmn:outgoing>Flow_00f2z7k</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1j3bhv3" name="Unresponsive" sourceRef="Activity_1n4cio4" targetRef="Activity_02b5e26">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1tfsp7n" sourceRef="Activity_19hhp6n" targetRef="Activity_1n4cio4" />
+    <bpmn:sequenceFlow id="Flow_0tg13am" sourceRef="StartEvent_1" targetRef="Activity_19hhp6n" />
+    <bpmn:sequenceFlow id="Flow_1eglusr" name="Affiliate signed up, account automatically created in MyAffiliates" sourceRef="Activity_1n4cio4" targetRef="Activity_075qqzq" />
+    <bpmn:sequenceFlow id="Flow_00f2z7k" name="Affiliate signed up, account automatically created in MyAffiliates" sourceRef="Activity_02b5e26" targetRef="Activity_075qqzq" />
+    <bpmn:sequenceFlow id="Flow_1tq2w7f" sourceRef="Activity_075qqzq" targetRef="Event_15mr1iu" />
+    <bpmn:endEvent id="Event_15mr1iu" name="Partner sourced successfully">
+      <bpmn:incoming>Flow_1tq2w7f</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:subProcess id="Activity_075qqzq">
+      <bpmn:incoming>Flow_1eglusr</bpmn:incoming>
+      <bpmn:incoming>Flow_00f2z7k</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tq2w7f</bpmn:outgoing>
+      <bpmn:startEvent id="Event_10vieu0">
+        <bpmn:outgoing>Flow_0lk5mfo</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:task id="Activity_1glq656" name="Affiliate, IB and CPA onboarding">
+        <bpmn:incoming>Flow_0lk5mfo</bpmn:incoming>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="Flow_0lk5mfo" sourceRef="Event_10vieu0" targetRef="Activity_1glq656" />
+    </bpmn:subProcess>
+    <bpmn:textAnnotation id="TextAnnotation_0br2t1h">
+      <bpmn:text>Mandatory field in Close.io:
+1. Contact manager
+2. Date of first contact
+3. Partnership types
+4. Source of lead
+5. Country of lead</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1rjp5t7" sourceRef="Activity_19hhp6n" targetRef="TextAnnotation_0br2t1h" />
+    <bpmn:textAnnotation id="TextAnnotation_1osjwj8">
+      <bpmn:text>Add a note on Close.io if the tracking link was shared in channels other than emails</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_06xlki7" sourceRef="Activity_1n4cio4" targetRef="TextAnnotation_1osjwj8" />
+    <bpmn:textAnnotation id="TextAnnotation_02fvxo5">
+      <bpmn:text>Leads will remain in Close.io until reachable</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0pxve1e" sourceRef="Activity_02b5e26" targetRef="TextAnnotation_02fvxo5" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_1nnugco">
+      <bpmndi:BPMNShape id="Participant_1tjas86_di" bpmnElement="Participant_1tjas86" isHorizontal="true">
+        <dc:Bounds x="140" y="120" width="1220" height="559" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_16w9pxq_di" bpmnElement="Lane_16w9pxq" isHorizontal="true">
+        <dc:Bounds x="170" y="120" width="1190" height="559" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1tq2w7f_di" bpmnElement="Flow_1tq2w7f">
+        <di:waypoint x="1100" y="310" />
+        <di:waypoint x="1182" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_00f2z7k_di" bpmnElement="Flow_00f2z7k">
+        <di:waypoint x="680" y="510" />
+        <di:waypoint x="1000" y="510" />
+        <di:waypoint x="1000" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="804" y="517" width="72" height="66" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1eglusr_di" bpmnElement="Flow_1eglusr">
+        <di:waypoint x="680" y="310" />
+        <di:waypoint x="860" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="734" y="317" width="72" height="66" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0tg13am_di" bpmnElement="Flow_0tg13am">
+        <di:waypoint x="278" y="310" />
+        <di:waypoint x="370" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tfsp7n_di" bpmnElement="Flow_1tfsp7n">
+        <di:waypoint x="470" y="310" />
+        <di:waypoint x="580" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1j3bhv3_di" bpmnElement="Flow_1j3bhv3">
+        <di:waypoint x="630" y="350" />
+        <di:waypoint x="630" y="460" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="636" y="403" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="242" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="222" y="335" width="77" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19hhp6n_di" bpmnElement="Activity_19hhp6n">
+        <dc:Bounds x="370" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1n4cio4_di" bpmnElement="Activity_1n4cio4">
+        <dc:Bounds x="580" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_02b5e26_di" bpmnElement="Activity_02b5e26">
+        <dc:Bounds x="580" y="460" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_15mr1iu_di" bpmnElement="Event_15mr1iu">
+        <dc:Bounds x="1182" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1230" y="300" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_075qqzq_di" bpmnElement="Activity_075qqzq" isExpanded="true">
+        <dc:Bounds x="860" y="240" width="240" height="140" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0lk5mfo_di" bpmnElement="Flow_0lk5mfo">
+        <di:waypoint x="916" y="310" />
+        <di:waypoint x="970" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Event_10vieu0_di" bpmnElement="Event_10vieu0">
+        <dc:Bounds x="880" y="292" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1glq656_di" bpmnElement="Activity_1glq656">
+        <dc:Bounds x="970" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0br2t1h_di" bpmnElement="TextAnnotation_0br2t1h">
+        <dc:Bounds x="371" y="380" width="149" height="110" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1osjwj8_di" bpmnElement="TextAnnotation_1osjwj8">
+        <dc:Bounds x="580" y="170" width="180" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_02fvxo5_di" bpmnElement="TextAnnotation_02fvxo5">
+        <dc:Bounds x="555" y="560" width="149.98734817813764" height="39.979757085020246" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1rjp5t7_di" bpmnElement="Association_1rjp5t7">
+        <di:waypoint x="419" y="350" />
+        <di:waypoint x="419" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_06xlki7_di" bpmnElement="Association_06xlki7">
+        <di:waypoint x="630" y="270" />
+        <di:waypoint x="630" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0pxve1e_di" bpmnElement="Association_0pxve1e">
+        <di:waypoint x="630" y="540" />
+        <di:waypoint x="630" y="560" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0rg5nan" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.7.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_139ffms">
+    <bpmn:participant id="Participant_1hqc8dw" name="Marketing - Suspicious Client Activity" processRef="Suspicious_Client_Activity" />
+  </bpmn:collaboration>
+  <bpmn:process id="Suspicious_Client_Activity" name="Marketing - Suspicious Client Activity" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_05op840">
+      <bpmn:lane id="Lane_01jzsuf" name="BI team">
+        <bpmn:flowNodeRef>Activity_06lxxaf</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0zrpunx</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0x58owp" name="Anti-Fraud/Compliance/Quants">
+        <bpmn:flowNodeRef>Activity_1ardhp1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0xv0vg7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0jx8q5a</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0hjnhl2</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1anlqqi</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1lal43b</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:callActivity id="Activity_1ardhp1" name="Anti-Fraud&#10;(Internal/External Fraud Notification Checks)" calledElement="Anti-Fraud Checks">
+      <bpmn:incoming>Flow_0bh199l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1o54mvz</bpmn:outgoing>
+    </bpmn:callActivity>
+    <bpmn:endEvent id="Event_0xv0vg7">
+      <bpmn:incoming>Flow_1o54mvz</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_06lxxaf" name="Email the initiator to inform that the intormation is updated in database">
+      <bpmn:incoming>Flow_0rpfcvf</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bh199l</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0zrpunx" name="Create a table in BigQuery stored in GCP (google cloud platform) database">
+      <bpmn:incoming>Flow_1q15dwe</bpmn:incoming>
+      <bpmn:outgoing>Flow_0rpfcvf</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0jx8q5a" name="Email the link and access to the tracker to BI team">
+      <bpmn:incoming>Flow_1djms30</bpmn:incoming>
+      <bpmn:outgoing>Flow_1q15dwe</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:startEvent id="StartEvent_1" name="Suspicious client activity">
+      <bpmn:outgoing>Flow_08to6hz</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1mv1zg4</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_0hjnhl2" name="Create a tracker in Google sheet and document the list of clients for investigation">
+      <bpmn:incoming>Flow_08to6hz</bpmn:incoming>
+      <bpmn:incoming>Flow_1ymdqt5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1djms30</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1anlqqi" name="Notify the Anti-Fraud/Compliance/Quants team via slack/email">
+      <bpmn:incoming>Flow_1mv1zg4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ymdqt5</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1snh5jq</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_1lal43b">
+      <bpmn:incoming>Flow_1snh5jq</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0rpfcvf" sourceRef="Activity_0zrpunx" targetRef="Activity_06lxxaf" />
+    <bpmn:sequenceFlow id="Flow_1djms30" sourceRef="Activity_0hjnhl2" targetRef="Activity_0jx8q5a" />
+    <bpmn:sequenceFlow id="Flow_1q15dwe" sourceRef="Activity_0jx8q5a" targetRef="Activity_0zrpunx" />
+    <bpmn:sequenceFlow id="Flow_1snh5jq" name="No further action required" sourceRef="Activity_1anlqqi" targetRef="Event_1lal43b">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">123</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1ymdqt5" name="Require further action" sourceRef="Activity_1anlqqi" targetRef="Activity_0hjnhl2">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">123</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1mv1zg4" name="Identified by other teams/employees" sourceRef="StartEvent_1" targetRef="Activity_1anlqqi" />
+    <bpmn:sequenceFlow id="Flow_08to6hz" name="Identified by Compliance, Anti-fraud, Quants" sourceRef="StartEvent_1" targetRef="Activity_0hjnhl2" />
+    <bpmn:sequenceFlow id="Flow_0bh199l" sourceRef="Activity_06lxxaf" targetRef="Activity_1ardhp1" />
+    <bpmn:sequenceFlow id="Flow_1o54mvz" sourceRef="Activity_1ardhp1" targetRef="Event_0xv0vg7" />
+    <bpmn:textAnnotation id="TextAnnotation_0vtof39">
+      <bpmn:text>- console.cloud.google.com
+- Data tracker gets updated automatically in database when new login is created</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1hy5bo0">
+      <bpmn:text>City_Country_Type
+e.g User Id, Login id, IP details</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1ymfmwp" sourceRef="Activity_0zrpunx" targetRef="TextAnnotation_0vtof39" />
+    <bpmn:association id="Association_17er96f" sourceRef="Activity_0hjnhl2" targetRef="TextAnnotation_1hy5bo0" />
+    <bpmn:textAnnotation id="TextAnnotation_1buh5o8">
+      <bpmn:text>Inform the other relevant teams on the suspicious user login details</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_16h83mw" sourceRef="Activity_0jx8q5a" targetRef="TextAnnotation_1buh5o8" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_139ffms">
+      <bpmndi:BPMNShape id="Participant_1hqc8dw_di" bpmnElement="Participant_1hqc8dw" isHorizontal="true">
+        <dc:Bounds x="154" y="80" width="1361" height="760" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0x58owp_di" bpmnElement="Lane_0x58owp" isHorizontal="true">
+        <dc:Bounds x="184" y="80" width="1331" height="530" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_01jzsuf_di" bpmnElement="Lane_01jzsuf" isHorizontal="true">
+        <dc:Bounds x="184" y="610" width="1331" height="230" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1o54mvz_di" bpmnElement="Flow_1o54mvz">
+        <di:waypoint x="1285" y="270" />
+        <di:waypoint x="1367" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bh199l_di" bpmnElement="Flow_0bh199l">
+        <di:waypoint x="1025" y="760" />
+        <di:waypoint x="1115" y="760" />
+        <di:waypoint x="1115" y="270" />
+        <di:waypoint x="1185" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_08to6hz_di" bpmnElement="Flow_08to6hz">
+        <di:waypoint x="345" y="322" />
+        <di:waypoint x="345" y="270" />
+        <di:waypoint x="515" y="270" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="376" y="223" width="87" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mv1zg4_di" bpmnElement="Flow_1mv1zg4" bioc:stroke="black" bioc:fill="white">
+        <di:waypoint x="345" y="358" />
+        <di:waypoint x="345" y="440" />
+        <di:waypoint x="515" y="440" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="386" y="390" width="87" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ymdqt5_di" bpmnElement="Flow_1ymdqt5">
+        <di:waypoint x="565" y="400" />
+        <di:waypoint x="565" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="573" y="336" width="74" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1snh5jq_di" bpmnElement="Flow_1snh5jq">
+        <di:waypoint x="565" y="480" />
+        <di:waypoint x="565" y="552" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="575" y="506" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q15dwe_di" bpmnElement="Flow_1q15dwe">
+        <di:waypoint x="785" y="310" />
+        <di:waypoint x="785" y="720" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1djms30_di" bpmnElement="Flow_1djms30">
+        <di:waypoint x="615" y="270" />
+        <di:waypoint x="735" y="270" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0rpfcvf_di" bpmnElement="Flow_0rpfcvf">
+        <di:waypoint x="835" y="760" />
+        <di:waypoint x="925" y="760" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0huv50e_di" bpmnElement="Activity_1ardhp1">
+        <dc:Bounds x="1185" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0xv0vg7_di" bpmnElement="Event_0xv0vg7">
+        <dc:Bounds x="1367" y="252" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06lxxaf_di" bpmnElement="Activity_06lxxaf">
+        <dc:Bounds x="925" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0zrpunx_di" bpmnElement="Activity_0zrpunx">
+        <dc:Bounds x="735" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0jx8q5a_di" bpmnElement="Activity_0jx8q5a">
+        <dc:Bounds x="735" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="327" y="322" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="234" y="336" width="82" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0hjnhl2_di" bpmnElement="Activity_0hjnhl2">
+        <dc:Bounds x="515" y="230" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1anlqqi_di" bpmnElement="Activity_1anlqqi" bioc:stroke="black" bioc:fill="white">
+        <dc:Bounds x="515" y="400" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1lal43b_di" bpmnElement="Event_1lal43b">
+        <dc:Bounds x="547" y="552" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0vtof39_di" bpmnElement="TextAnnotation_0vtof39">
+        <dc:Bounds x="815" y="610" width="160" height="82" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1hy5bo0_di" bpmnElement="TextAnnotation_1hy5bo0">
+        <dc:Bounds x="585" y="150" width="189.98819163292848" height="39" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1buh5o8_di" bpmnElement="TextAnnotation_1buh5o8">
+        <dc:Bounds x="822" y="138" width="145" height="63" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1ymfmwp_di" bpmnElement="Association_1ymfmwp">
+        <di:waypoint x="806" y="720" />
+        <di:waypoint x="821" y="692" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_17er96f_di" bpmnElement="Association_17er96f">
+        <di:waypoint x="594" y="230" />
+        <di:waypoint x="625" y="189" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_16h83mw_di" bpmnElement="Association_16h83mw">
+        <di:waypoint x="815" y="230" />
+        <di:waypoint x="836" y="201" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
