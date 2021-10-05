@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1cw9pre" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.6.0">
+  <bpmn:collaboration id="Collaboration_0rm3419">
+    <bpmn:participant id="Participant_0c86st3" name="Marketing - Rescind Affiliates Earnings" processRef="Rescind_Affiliates_Earnings" />
+  </bpmn:collaboration>
+  <bpmn:process id="Rescind_Affiliates_Earnings" name="Marketing - Rescind Affiliates Earnings" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1udccyj">
+      <bpmn:lane id="Lane_1wpjgbd" name="Marketing">
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1psnt49</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1tziw4x</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1lqnrhu</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_00sbmcy</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_04zxw3l</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_1p23kjs" name="Accounts">
+        <bpmn:flowNodeRef>Event_1d1ze4n</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0hrgkq3</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, Date)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_0bw7zyh</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:endEvent id="Event_1d1ze4n">
+      <bpmn:incoming>Flow_12mjm84</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_12mjm84" sourceRef="Activity_0hrgkq3" targetRef="Event_1d1ze4n" />
+    <bpmn:sequenceFlow id="Flow_01mujm4" sourceRef="Activity_04zxw3l" targetRef="Activity_0hrgkq3" />
+    <bpmn:sequenceFlow id="Flow_1a528w4" sourceRef="Activity_00sbmcy" targetRef="Activity_04zxw3l" />
+    <bpmn:sequenceFlow id="Flow_0cw43q8" sourceRef="Activity_1lqnrhu" targetRef="Activity_00sbmcy" />
+    <bpmn:sequenceFlow id="Flow_1qszqza" sourceRef="Activity_1psnt49" targetRef="Activity_1tziw4x" />
+    <bpmn:sequenceFlow id="Flow_0bw7zyh" sourceRef="StartEvent_1" targetRef="Activity_1psnt49" />
+    <bpmn:sequenceFlow id="Flow_08f9gqa" sourceRef="Activity_1tziw4x" targetRef="Activity_1lqnrhu" />
+    <bpmn:userTask id="Activity_1psnt49" name="Upload affiliate email addresses to be rescinded into Bulk Email Checker for verification" camunda:candidateGroups="AffMktgOps">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+          <camunda:formField id="GenerateMetabaseList" label="Generate list of affiliate accounts to be rescinded via Metabase" type="boolean" />
+          <camunda:formField id="Createcsv" label="Compile the list into csv file" type="boolean" />
+          <camunda:formField id="bulkEmailChecker" label="Upload affiliate email addresses to be rescinded into Bulk Email Checker for verification" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0bw7zyh</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qszqza</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1tziw4x" name="Upload verified email addresses into Customer.io to trigger reminder email" camunda:candidateGroups="AffMktgOps">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+          <camunda:formField id="csvVerificationList" label="Prepare csv file with email addresses which passed verification" type="boolean" />
+          <camunda:formField id="draftEmail" label="Prepare draft email in Customer.io using the relevant template" type="boolean" />
+          <camunda:formField id="uploadEmail" label="Upload verified email addresses into Customer.io to trigger reminder email" type="boolean" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1qszqza</bpmn:incoming>
+      <bpmn:outgoing>Flow_08f9gqa</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_1lqnrhu" name="Assist affiliate to set up payment method and regenerate list to rescind earnings" camunda:candidateGroups="AffMktgOps">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_08f9gqa</bpmn:incoming>
+      <bpmn:outgoing>Flow_0cw43q8</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_00sbmcy" name="Perform manual adjustment of affiliate earnings in MyAffiliates and perform verification" camunda:candidateGroups="AffMktgOps">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0cw43q8</bpmn:incoming>
+      <bpmn:outgoing>Flow_1a528w4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_04zxw3l" name="Send the finalised Rescind Schedule to the Accounts team" camunda:candidateGroups="AffMktgOps">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1a528w4</bpmn:incoming>
+      <bpmn:outgoing>Flow_01mujm4</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0hrgkq3" name="Perform adjustment of rescinded amounts from accrual balances in Xero system" camunda:candidateGroups="Accounts">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Date" label="Date" type="date" />
+        </camunda:formData>
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="create" />
+        <camunda:taskListener class="com.deriv.bpm.camunda.sendemail.TaskListenerInterceptor" event="assignment" />
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_01mujm4</bpmn:incoming>
+      <bpmn:outgoing>Flow_12mjm84</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:textAnnotation id="TextAnnotation_1uswt48">
+      <bpmn:text>1. Prepare csv file with email addresses which passed verification
+2. Prepare draft email in Customer.io using the relevant template</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0hjof4x">
+      <bpmn:text>1. Generate list of affiliate accounts to be rescinded via Metabase
+2. Compile the list into csv file</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1lj5gxv" sourceRef="Activity_1tziw4x" targetRef="TextAnnotation_1uswt48" />
+    <bpmn:association id="Association_0gspcw2" sourceRef="Activity_1psnt49" targetRef="TextAnnotation_0hjof4x" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0rm3419">
+      <bpmndi:BPMNShape id="Participant_0c86st3_di" bpmnElement="Participant_0c86st3" isHorizontal="true">
+        <dc:Bounds x="170" y="80" width="1330" height="580" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1p23kjs_di" bpmnElement="Lane_1p23kjs" isHorizontal="true">
+        <dc:Bounds x="200" y="380" width="1300" height="280" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_1wpjgbd_di" bpmnElement="Lane_1wpjgbd" isHorizontal="true">
+        <dc:Bounds x="200" y="80" width="1300" height="300" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_08f9gqa_di" bpmnElement="Flow_08f9gqa">
+        <di:waypoint x="750" y="260" />
+        <di:waypoint x="910" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bw7zyh_di" bpmnElement="Flow_0bw7zyh">
+        <di:waypoint x="298" y="260" />
+        <di:waypoint x="370" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qszqza_di" bpmnElement="Flow_1qszqza">
+        <di:waypoint x="470" y="260" />
+        <di:waypoint x="650" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0cw43q8_di" bpmnElement="Flow_0cw43q8">
+        <di:waypoint x="1010" y="260" />
+        <di:waypoint x="1140" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1a528w4_di" bpmnElement="Flow_1a528w4">
+        <di:waypoint x="1240" y="260" />
+        <di:waypoint x="1340" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01mujm4_di" bpmnElement="Flow_01mujm4">
+        <di:waypoint x="1390" y="300" />
+        <di:waypoint x="1390" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_12mjm84_di" bpmnElement="Flow_12mjm84">
+        <di:waypoint x="1390" y="530" />
+        <di:waypoint x="1390" y="602" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="262" y="242" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1d1ze4n_di" bpmnElement="Event_1d1ze4n">
+        <dc:Bounds x="1372" y="602" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0wq50sh_di" bpmnElement="Activity_1psnt49">
+        <dc:Bounds x="370" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0vv1a1g_di" bpmnElement="Activity_1tziw4x">
+        <dc:Bounds x="650" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08lkemx_di" bpmnElement="Activity_1lqnrhu">
+        <dc:Bounds x="910" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1mdbs9h_di" bpmnElement="Activity_00sbmcy">
+        <dc:Bounds x="1140" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0f7bvz2_di" bpmnElement="Activity_04zxw3l">
+        <dc:Bounds x="1340" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1bm1imi_di" bpmnElement="Activity_0hrgkq3">
+        <dc:Bounds x="1340" y="450" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1uswt48_di" bpmnElement="TextAnnotation_1uswt48">
+        <dc:Bounds x="750" y="118" width="290" height="74" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0hjof4x_di" bpmnElement="TextAnnotation_0hjof4x">
+        <dc:Bounds x="400" y="130" width="229.99675685693106" height="49.99073387694589" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1lj5gxv_di" bpmnElement="Association_1lj5gxv">
+        <di:waypoint x="730" y="220" />
+        <di:waypoint x="750" y="191" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0gspcw2_di" bpmnElement="Association_0gspcw2">
+        <di:waypoint x="430" y="220" />
+        <di:waypoint x="441" y="180" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

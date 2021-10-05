@@ -1,0 +1,690 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:bioc="http://bpmn.io/schema/bpmn/biocolor/1.0" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_170gpom" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.9.0" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:collaboration id="Collaboration_0ec6gva">
+    <bpmn:participant id="Participant_0p95xbu" name="Marketing - Affiliate, IB, CPA Onboarding" processRef="Affiliate_IB_CPA_Onboarding" />
+  </bpmn:collaboration>
+  <bpmn:process id="Affiliate_IB_CPA_Onboarding" name="Marketing - Affiliate,IB,CPA Onboarding" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_0udm186">
+      <bpmn:lane id="Lane_0spligp" name="Compliance">
+        <bpmn:flowNodeRef>Activity_1khpurd</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_19hn9ut</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_07vohvk" name="Marketing">
+        <bpmn:flowNodeRef>Gateway_00mkm41</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_13cbcrg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0elqcv1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0sjsapb</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0l6ayus</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0lzbeb5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1kuv90d</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_16psr9e</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_06ror2l</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0kgeiu4</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_09dfpp3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0mrh6qh</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_151q4bg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0x5s86v</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_180b1b5</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_027rlmg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_1taw4ru</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0u60oyg</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1tc6oia</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0kjey3s</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_13ddn5v</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_1bswqm7</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1jtugqs</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Event_0nxz41d</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_0nzhnbq</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_04z8ore</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_08s3nep</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_00rf70m</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:exclusiveGateway id="Gateway_00mkm41" name="Is the affiliate from EU/UK?">
+      <bpmn:incoming>Flow_1q6hya6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0i1bp8c</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1261y3d</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:endEvent id="Event_13cbcrg" name="Affiliate application rejected">
+      <bpmn:incoming>Flow_1krrtfb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_0elqcv1" name="Reject the affiliate application and notify the affiliate via close.io">
+      <bpmn:incoming>Flow_0nh7jjb</bpmn:incoming>
+      <bpmn:outgoing>Flow_1krrtfb</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0sjsapb" name="Copy affiliate&#39;s email and search in MyAffiliates for duplicate accounts">
+      <bpmn:incoming>Flow_01fu8un</bpmn:incoming>
+      <bpmn:outgoing>Flow_0nh7jjb</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1q6hya6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:startEvent id="Event_0l6ayus" name="Receive new application from MyAffiliates">
+      <bpmn:outgoing>Flow_01fu8un</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_0lzbeb5" name="Add relevant tags to the affiliate account  and send welcome emails in MyAffiliates">
+      <bpmn:incoming>Flow_0i1bp8c</bpmn:incoming>
+      <bpmn:outgoing>Flow_07jidn9</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1yw192u</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1kuv90d" name="Request the affiliate via Close.io to open a new affiliate account and obtain EU/UK promo plan">
+      <bpmn:incoming>Flow_0u2nfvv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0bsw1g1</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_16psr9e" name="Reach out to the affiliate via Close.io to obtain EU/UK promo plan">
+      <bpmn:incoming>Flow_05q7d8l</bpmn:incoming>
+      <bpmn:outgoing>Flow_1uvgln3</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_06ror2l" name="Change the account status to &#39;Verified&#39; and Submit the affiliates EU/UK promo plans to CompOps via email">
+      <bpmn:incoming>Flow_1uvgln3</bpmn:incoming>
+      <bpmn:incoming>Flow_0bsw1g1</bpmn:incoming>
+      <bpmn:outgoing>Flow_1xber1q</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_0652x8n" sourceRef="Activity_1khpurd" targetRef="Activity_0kgeiu4" />
+    <bpmn:sequenceFlow id="Flow_0jokm1t" sourceRef="Activity_13ddn5v" targetRef="Activity_19hn9ut" />
+    <bpmn:sequenceFlow id="Flow_0t7krjg" name="Amendment required" sourceRef="Activity_19hn9ut" targetRef="Activity_13ddn5v">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0xu19cw" sourceRef="Activity_0nzhnbq" targetRef="Activity_1khpurd" />
+    <bpmn:sequenceFlow id="Flow_0ezx5xv" name="No" sourceRef="Gateway_1bswqm7" targetRef="Activity_0nzhnbq">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0juggy6" name="Yes" sourceRef="Gateway_1bswqm7" targetRef="Activity_04z8ore">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1xber1q" sourceRef="Activity_06ror2l" targetRef="Activity_19hn9ut" />
+    <bpmn:sequenceFlow id="Flow_05q7d8l" name="Promoting in EU/UK only" sourceRef="Gateway_1tc6oia" targetRef="Activity_16psr9e" />
+    <bpmn:sequenceFlow id="Flow_1261y3d" name="Yes" sourceRef="Gateway_00mkm41" targetRef="Gateway_1tc6oia">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1yc8r7z" name="Promoting outside EU/UK" sourceRef="Gateway_1tc6oia" targetRef="Activity_0kjey3s" />
+    <bpmn:sequenceFlow id="Flow_1x1unfj" name="CPA promo plan approved" sourceRef="Activity_19hn9ut" targetRef="Activity_09dfpp3">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0i1bp8c" name="No" sourceRef="Gateway_00mkm41" targetRef="Activity_0lzbeb5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0u2nfvv" name="Promoting in EU/UK and rest of the world" sourceRef="Gateway_1tc6oia" targetRef="Activity_1kuv90d" />
+    <bpmn:sequenceFlow id="Flow_0240fqt" sourceRef="Activity_0kjey3s" targetRef="Gateway_1bswqm7" />
+    <bpmn:sequenceFlow id="Flow_1q6hya6" name="No duplicate application found" sourceRef="Activity_0sjsapb" targetRef="Gateway_00mkm41">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression" />
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1krrtfb" sourceRef="Activity_0elqcv1" targetRef="Event_13cbcrg" />
+    <bpmn:sequenceFlow id="Flow_0nh7jjb" name="Duplicate application found" sourceRef="Activity_0sjsapb" targetRef="Activity_0elqcv1">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_01fu8un" sourceRef="Event_0l6ayus" targetRef="Activity_0sjsapb" />
+    <bpmn:sequenceFlow id="Flow_0bsw1g1" sourceRef="Activity_1kuv90d" targetRef="Activity_06ror2l" />
+    <bpmn:sequenceFlow id="Flow_1uvgln3" name="New affiliate account created" sourceRef="Activity_16psr9e" targetRef="Activity_06ror2l" />
+    <bpmn:task id="Activity_0kgeiu4" name="Register affiliate as IB by adding active fiat and MT5 synthetic accounts as user variables in affiliate account on MyAffiliates">
+      <bpmn:incoming>Flow_1pvalcz</bpmn:incoming>
+      <bpmn:incoming>Flow_0652x8n</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qdsgmj</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1pvalcz" sourceRef="Activity_04z8ore" targetRef="Activity_0kgeiu4" />
+    <bpmn:sequenceFlow id="Flow_1qdsgmj" sourceRef="Activity_0kgeiu4" targetRef="Activity_1jtugqs" />
+    <bpmn:sequenceFlow id="Flow_1qk3v3v" sourceRef="Activity_1jtugqs" targetRef="Event_0nxz41d" />
+    <bpmn:task id="Activity_09dfpp3" name="TL to subscribe the affiliate account to CPA plan and request another TL to review via email">
+      <bpmn:incoming>Flow_1x1unfj</bpmn:incoming>
+      <bpmn:outgoing>Flow_0g3004d</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0mrh6qh" name="Change affiliate account status to &#39;Approved&#39;, tag EU marketing materials and send CPA welcome email via Close.io">
+      <bpmn:incoming>Flow_0g3004d</bpmn:incoming>
+      <bpmn:outgoing>Flow_10zjkfb</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_151q4bg" name="CPA account creation completed">
+      <bpmn:incoming>Flow_10zjkfb</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_0g3004d" sourceRef="Activity_09dfpp3" targetRef="Activity_0mrh6qh" />
+    <bpmn:sequenceFlow id="Flow_10zjkfb" sourceRef="Activity_0mrh6qh" targetRef="Event_151q4bg" />
+    <bpmn:task id="Activity_0x5s86v" name="Search BO with affiliate&#39;s email to check for active fiat and MT5 synthetic account">
+      <bpmn:incoming>Flow_1b0v5a6</bpmn:incoming>
+      <bpmn:incoming>Flow_0499htv</bpmn:incoming>
+      <bpmn:outgoing>Flow_05xy2kr</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0bowvyw</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_180b1b5" name="Register affiliate as IB by adding active CR fiat and MT5 synthetic accounts as user variables in affiliate account on MyAffiliates">
+      <bpmn:incoming>Flow_05xy2kr</bpmn:incoming>
+      <bpmn:incoming>Flow_0axfmf8</bpmn:incoming>
+      <bpmn:outgoing>Flow_0kfv6ks</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_027rlmg" name="Send affiliate managers introduction to the affiliate via Close.io">
+      <bpmn:incoming>Flow_0kfv6ks</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ozvkoo</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_1taw4ru" name="RevShare or Turnover account creation completed">
+      <bpmn:incoming>Flow_1ozvkoo</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_0u60oyg" name="Pitch for IB and request affiliates to open Deriv fiat and MT5 synthetic accounts via close.io">
+      <bpmn:incoming>Flow_0bowvyw</bpmn:incoming>
+      <bpmn:outgoing>Flow_0axfmf8</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1yw192u" name="Turnover plan" sourceRef="Activity_0lzbeb5" targetRef="Activity_00rf70m">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_07jidn9" name="RevShare plan" sourceRef="Activity_0lzbeb5" targetRef="Activity_08s3nep">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0499htv" sourceRef="Activity_08s3nep" targetRef="Activity_0x5s86v" />
+    <bpmn:sequenceFlow id="Flow_1b0v5a6" sourceRef="Activity_00rf70m" targetRef="Activity_0x5s86v" />
+    <bpmn:sequenceFlow id="Flow_05xy2kr" name="Eligible for IB registration" sourceRef="Activity_0x5s86v" targetRef="Activity_180b1b5">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0bowvyw" name="Not eligible for IB registration" sourceRef="Activity_0x5s86v" targetRef="Activity_0u60oyg">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">aa</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_0axfmf8" name="Eligible for IB registration" sourceRef="Activity_0u60oyg" targetRef="Activity_180b1b5" />
+    <bpmn:sequenceFlow id="Flow_0kfv6ks" sourceRef="Activity_180b1b5" targetRef="Activity_027rlmg" />
+    <bpmn:sequenceFlow id="Flow_1ozvkoo" sourceRef="Activity_027rlmg" targetRef="Event_1taw4ru" />
+    <bpmn:exclusiveGateway id="Gateway_1tc6oia">
+      <bpmn:incoming>Flow_1261y3d</bpmn:incoming>
+      <bpmn:outgoing>Flow_1yc8r7z</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0u2nfvv</bpmn:outgoing>
+      <bpmn:outgoing>Flow_05q7d8l</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Activity_0kjey3s" name="Add relevant tags on the affiliate account and change status to &#39;Approve&#39; in MyAffiliates">
+      <bpmn:incoming>Flow_1yc8r7z</bpmn:incoming>
+      <bpmn:outgoing>Flow_0240fqt</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_13ddn5v" name="Notify affiliate via Close.io to implement the suggested amendments by CompOps">
+      <bpmn:incoming>Flow_0t7krjg</bpmn:incoming>
+      <bpmn:outgoing>Flow_0jokm1t</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_1bswqm7" name="Can the affiliate open MLT account?">
+      <bpmn:incoming>Flow_0240fqt</bpmn:incoming>
+      <bpmn:outgoing>Flow_0juggy6</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0ezx5xv</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Activity_1jtugqs" name="Send the Affiliate and IB welcome email to the affiliate via Close.io">
+      <bpmn:incoming>Flow_1qdsgmj</bpmn:incoming>
+      <bpmn:outgoing>Flow_1qk3v3v</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_0nxz41d" name="IB account creation completed">
+      <bpmn:incoming>Flow_1qk3v3v</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_0nzhnbq" name="Assist affiliates to open a CR/MT5 synthetic accounts then notify CompOps via email">
+      <bpmn:incoming>Flow_0ezx5xv</bpmn:incoming>
+      <bpmn:outgoing>Flow_0xu19cw</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_04z8ore" name="Assist the affiliate to open fiat MLT/MT5 synthetic accounts if there&#39;s none yet">
+      <bpmn:incoming>Flow_0juggy6</bpmn:incoming>
+      <bpmn:outgoing>Flow_1pvalcz</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1khpurd" name="Disable trading on affiliate&#39;s account in BO, MT5 synthetic account in MT5 manager and reply Marketing via email">
+      <bpmn:incoming>Flow_0xu19cw</bpmn:incoming>
+      <bpmn:outgoing>Flow_0652x8n</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_19hn9ut" name="Review the EU/UK promo plans and respond to the Marketing team">
+      <bpmn:incoming>Flow_1xber1q</bpmn:incoming>
+      <bpmn:incoming>Flow_0jokm1t</bpmn:incoming>
+      <bpmn:outgoing>Flow_1x1unfj</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0t7krjg</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_08s3nep" name="Change affiliate account status to &#39;Approved&#39; in MyAffiliates and RevShare welcome email will be triggered automatically">
+      <bpmn:incoming>Flow_07jidn9</bpmn:incoming>
+      <bpmn:outgoing>Flow_0499htv</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_00rf70m" name="Change affiliate account status to &#39;Approved&#39; and manually send Turnover plan welcome email from MyAffiliates">
+      <bpmn:incoming>Flow_1yw192u</bpmn:incoming>
+      <bpmn:outgoing>Flow_1b0v5a6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:textAnnotation id="TextAnnotation_0v3wfck">
+      <bpmn:text>Relevant tags are:
+1. Binary_Main
+2. All_banners</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1hdyxzx" sourceRef="Activity_0lzbeb5" targetRef="TextAnnotation_0v3wfck" />
+    <bpmn:textAnnotation id="TextAnnotation_15fmaff">
+      <bpmn:text>Search BO with the affiliates email address to see if the affiliate have fiat MLT and MT5 synthetic account.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_0cb0tqc">
+      <bpmn:text>Duplicate affiliate account means an active account exist with same email address and the same commission plan</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0gecuzz" sourceRef="Activity_0sjsapb" targetRef="TextAnnotation_0cb0tqc" />
+    <bpmn:textAnnotation id="TextAnnotation_0o58c23">
+      <bpmn:text>Uncheck RevShare trigger email before changing the account status to 'Approved' in MyAffiliates.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_10ji55f">
+      <bpmn:text>Assist or follow up with the affiliate if they unable to open Deriv fiat and MT5 synthetic accounts</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:textAnnotation id="TextAnnotation_1cvxbxf">
+      <bpmn:text>Affiliate will be registered as IB if they have an active CR fiat account and an MT5 synthetic indices account</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1ipk96j" sourceRef="Activity_0x5s86v" targetRef="TextAnnotation_1cvxbxf" />
+    <bpmn:association id="Association_06duxtz" sourceRef="Activity_0u60oyg" targetRef="TextAnnotation_10ji55f" />
+    <bpmn:textAnnotation id="TextAnnotation_000tcc1">
+      <bpmn:text>Relevant tags:
+1. Binary_Main
+2. All_Banners tags
+
+Do not trigger welcome email</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0ltvd4f" sourceRef="Activity_0kjey3s" targetRef="TextAnnotation_000tcc1" />
+    <bpmn:textAnnotation id="TextAnnotation_042jn0l">
+      <bpmn:text>As a work around for IB registration, the affiliate manager may assist the affiliate to open CR account by setting the country of residency anywhere outside EU/UK. The Deriv account will only be used to withdraw commission, trading and deposit will be disabled.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0igj8ly" sourceRef="Activity_0nzhnbq" targetRef="TextAnnotation_042jn0l" />
+    <bpmn:association id="Association_1gfi7ct" sourceRef="Activity_04z8ore" targetRef="TextAnnotation_15fmaff" />
+    <bpmn:association id="Association_18hvaqq" sourceRef="Activity_00rf70m" targetRef="TextAnnotation_0o58c23" />
+    <bpmn:textAnnotation id="TextAnnotation_00m4al9">
+      <bpmn:text>Promo plan should include all the materials and online channels the affiliate is planning to utilize</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0odvgaf" sourceRef="Activity_16psr9e" targetRef="TextAnnotation_00m4al9" />
+    <bpmn:textAnnotation id="TextAnnotation_1klkk3p">
+      <bpmn:text>Reviews done to:
+1. Confirm the website is functional and the website content is directly related to the product the affiliate wants to promote.
+2. Spot how will the affiliate enhance the service to clients (if trying to promote financial products)
+3. Spot any wrong or bad approach to marketing activities such as claiming that clients will surely win</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1tdbr4h" sourceRef="Activity_19hn9ut" targetRef="TextAnnotation_1klkk3p" />
+    <bpmn:textAnnotation id="TextAnnotation_0yqztek">
+      <bpmn:text>MLT accounts can be used for IB registrations.
+
+Affiliate from EU (except those from IOM, UK, Italy, Germany, Spain, Luxembourg and Greece) should be able to create MLT account.</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1lamhm0" sourceRef="Gateway_1bswqm7" targetRef="TextAnnotation_0yqztek" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0ec6gva">
+      <bpmndi:BPMNShape id="Participant_0p95xbu_di" bpmnElement="Participant_0p95xbu" isHorizontal="true">
+        <dc:Bounds x="160" y="90" width="2740" height="1839" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_07vohvk_di" bpmnElement="Lane_07vohvk" isHorizontal="true">
+        <dc:Bounds x="190" y="90" width="2710" height="1370" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0spligp_di" bpmnElement="Lane_0spligp" isHorizontal="true">
+        <dc:Bounds x="190" y="1460" width="2710" height="469" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1ozvkoo_di" bpmnElement="Flow_1ozvkoo">
+        <di:waypoint x="2090" y="380" />
+        <di:waypoint x="2202" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0kfv6ks_di" bpmnElement="Flow_0kfv6ks">
+        <di:waypoint x="1860" y="380" />
+        <di:waypoint x="1990" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0axfmf8_di" bpmnElement="Flow_0axfmf8" bioc:stroke="black" bioc:fill="white">
+        <di:waypoint x="1570" y="590" />
+        <di:waypoint x="1810" y="590" />
+        <di:waypoint x="1810" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1648" y="596" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bowvyw_di" bpmnElement="Flow_0bowvyw" bioc:stroke="black" bioc:fill="white">
+        <di:waypoint x="1520" y="420" />
+        <di:waypoint x="1520" y="550" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1428" y="465" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05xy2kr_di" bpmnElement="Flow_05xy2kr" bioc:stroke="black" bioc:fill="white">
+        <di:waypoint x="1570" y="380" />
+        <di:waypoint x="1760" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1634" y="386" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1b0v5a6_di" bpmnElement="Flow_1b0v5a6">
+        <di:waypoint x="1265" y="560" />
+        <di:waypoint x="1410" y="560" />
+        <di:waypoint x="1410" y="380" />
+        <di:waypoint x="1470" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0499htv_di" bpmnElement="Flow_0499htv">
+        <di:waypoint x="1265" y="380" />
+        <di:waypoint x="1470" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_07jidn9_di" bpmnElement="Flow_07jidn9">
+        <di:waypoint x="1000" y="380" />
+        <di:waypoint x="1165" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1053" y="361" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yw192u_di" bpmnElement="Flow_1yw192u">
+        <di:waypoint x="940" y="420" />
+        <di:waypoint x="940" y="560" />
+        <di:waypoint x="1165" y="560" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="946" y="490" width="68" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_10zjkfb_di" bpmnElement="Flow_10zjkfb">
+        <di:waypoint x="2600" y="1370" />
+        <di:waypoint x="2732" y="1370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0g3004d_di" bpmnElement="Flow_0g3004d">
+        <di:waypoint x="2370" y="1370" />
+        <di:waypoint x="2500" y="1370" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="3183" y="1406" width="64" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qk3v3v_di" bpmnElement="Flow_1qk3v3v">
+        <di:waypoint x="2050" y="1160" />
+        <di:waypoint x="2202" y="1160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1qdsgmj_di" bpmnElement="Flow_1qdsgmj">
+        <di:waypoint x="2000" y="1330" />
+        <di:waypoint x="2000" y="1200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1pvalcz_di" bpmnElement="Flow_1pvalcz">
+        <di:waypoint x="1810" y="1010" />
+        <di:waypoint x="1810" y="1370" />
+        <di:waypoint x="1950" y="1370" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1uvgln3_di" bpmnElement="Flow_1uvgln3">
+        <di:waypoint x="760" y="1200" />
+        <di:waypoint x="760" y="1320" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="424" y="1086" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0bsw1g1_di" bpmnElement="Flow_0bsw1g1">
+        <di:waypoint x="510" y="1010" />
+        <di:waypoint x="510" y="1240" />
+        <di:waypoint x="760" y="1240" />
+        <di:waypoint x="760" y="1320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_01fu8un_di" bpmnElement="Flow_01fu8un">
+        <di:waypoint x="338" y="380" />
+        <di:waypoint x="460" y="380" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0nh7jjb_di" bpmnElement="Flow_0nh7jjb">
+        <di:waypoint x="510" y="340" />
+        <di:waypoint x="510" y="240" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="418" y="276" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1krrtfb_di" bpmnElement="Flow_1krrtfb">
+        <di:waypoint x="560" y="200" />
+        <di:waypoint x="675" y="200" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1q6hya6_di" bpmnElement="Flow_1q6hya6">
+        <di:waypoint x="560" y="380" />
+        <di:waypoint x="735" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="604" y="346" width="84" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0240fqt_di" bpmnElement="Flow_0240fqt">
+        <di:waypoint x="1162" y="970" />
+        <di:waypoint x="1495" y="970" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0u2nfvv_di" bpmnElement="Flow_0u2nfvv">
+        <di:waypoint x="735" y="970" />
+        <di:waypoint x="560" y="970" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="608" y="928" width="90" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0i1bp8c_di" bpmnElement="Flow_0i1bp8c">
+        <di:waypoint x="785" y="380" />
+        <di:waypoint x="900" y="380" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="836" y="363" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1x1unfj_di" bpmnElement="Flow_1x1unfj">
+        <di:waypoint x="1100" y="1690" />
+        <di:waypoint x="1100" y="1760" />
+        <di:waypoint x="2320" y="1760" />
+        <di:waypoint x="2320" y="1410" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1131" y="1766" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1yc8r7z_di" bpmnElement="Flow_1yc8r7z">
+        <di:waypoint x="785" y="970" />
+        <di:waypoint x="1062" y="970" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="878" y="939" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1261y3d_di" bpmnElement="Flow_1261y3d">
+        <di:waypoint x="760" y="405" />
+        <di:waypoint x="760" y="945" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="766" y="717" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_05q7d8l_di" bpmnElement="Flow_05q7d8l">
+        <di:waypoint x="760" y="995" />
+        <di:waypoint x="760" y="1120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="769" y="1015" width="62" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1xber1q_di" bpmnElement="Flow_1xber1q">
+        <di:waypoint x="760" y="1400" />
+        <di:waypoint x="760" y="1650" />
+        <di:waypoint x="1050" y="1650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0juggy6_di" bpmnElement="Flow_0juggy6">
+        <di:waypoint x="1545" y="970" />
+        <di:waypoint x="1760" y="970" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1644" y="976" width="18" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ezx5xv_di" bpmnElement="Flow_0ezx5xv">
+        <di:waypoint x="1520" y="995" />
+        <di:waypoint x="1520" y="1120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1532" y="1028" width="15" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0xu19cw_di" bpmnElement="Flow_0xu19cw">
+        <di:waypoint x="1520" y="1200" />
+        <di:waypoint x="1520" y="1560" />
+        <di:waypoint x="1760" y="1560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0t7krjg_di" bpmnElement="Flow_0t7krjg">
+        <di:waypoint x="1150" y="1650" />
+        <di:waypoint x="1300" y="1650" />
+        <di:waypoint x="1300" y="1400" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1195" y="1656" width="60" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0jokm1t_di" bpmnElement="Flow_0jokm1t">
+        <di:waypoint x="1250" y="1360" />
+        <di:waypoint x="1100" y="1360" />
+        <di:waypoint x="1100" y="1610" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0652x8n_di" bpmnElement="Flow_0652x8n">
+        <di:waypoint x="1860" y="1560" />
+        <di:waypoint x="2000" y="1560" />
+        <di:waypoint x="2000" y="1410" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Gateway_0cah8hk_di" bpmnElement="Gateway_00mkm41" isMarkerVisible="true">
+        <dc:Bounds x="735" y="355" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="728" y="318" width="65" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_13cbcrg_di" bpmnElement="Event_13cbcrg">
+        <dc:Bounds x="675" y="182" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="667" y="225" width="53" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0elqcv1_di" bpmnElement="Activity_0elqcv1">
+        <dc:Bounds x="460" y="160" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0sjsapb_di" bpmnElement="Activity_0sjsapb">
+        <dc:Bounds x="460" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0l6ayus_di" bpmnElement="Event_0l6ayus">
+        <dc:Bounds x="302" y="362" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="281" y="405" width="78" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0lzbeb5_di" bpmnElement="Activity_0lzbeb5">
+        <dc:Bounds x="900" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1kuv90d_di" bpmnElement="Activity_1kuv90d">
+        <dc:Bounds x="460" y="930" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_16psr9e_di" bpmnElement="Activity_16psr9e">
+        <dc:Bounds x="710" y="1120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_06ror2l_di" bpmnElement="Activity_06ror2l">
+        <dc:Bounds x="710" y="1320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kgeiu4_di" bpmnElement="Activity_0kgeiu4">
+        <dc:Bounds x="1950" y="1330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_09dfpp3_di" bpmnElement="Activity_09dfpp3">
+        <dc:Bounds x="2270" y="1330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0mrh6qh_di" bpmnElement="Activity_0mrh6qh">
+        <dc:Bounds x="2500" y="1330" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_151q4bg_di" bpmnElement="Event_151q4bg">
+        <dc:Bounds x="2732" y="1352" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2718" y="1395" width="64" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0x5s86v_di" bpmnElement="Activity_0x5s86v">
+        <dc:Bounds x="1470" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_180b1b5_di" bpmnElement="Activity_180b1b5">
+        <dc:Bounds x="1760" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_027rlmg_di" bpmnElement="Activity_027rlmg">
+        <dc:Bounds x="1990" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_1taw4ru_di" bpmnElement="Event_1taw4ru">
+        <dc:Bounds x="2202" y="362" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2179" y="405" width="86" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0u60oyg_di" bpmnElement="Activity_0u60oyg">
+        <dc:Bounds x="1470" y="550" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_1tc6oia_di" bpmnElement="Gateway_1tc6oia" isMarkerVisible="true">
+        <dc:Bounds x="735" y="945" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0kjey3s_di" bpmnElement="Activity_0kjey3s">
+        <dc:Bounds x="1062" y="930" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_13ddn5v_di" bpmnElement="Activity_13ddn5v">
+        <dc:Bounds x="1250" y="1320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_0q6tdi5_di" bpmnElement="Gateway_1bswqm7" isMarkerVisible="true">
+        <dc:Bounds x="1495" y="945" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1481" y="895" width="77" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1jtugqs_di" bpmnElement="Activity_1jtugqs">
+        <dc:Bounds x="1950" y="1120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0nxz41d_di" bpmnElement="Event_0nxz41d">
+        <dc:Bounds x="2202" y="1142" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="2194" y="1185" width="52" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0nzhnbq_di" bpmnElement="Activity_0nzhnbq">
+        <dc:Bounds x="1470" y="1120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_04z8ore_di" bpmnElement="Activity_04z8ore">
+        <dc:Bounds x="1760" y="930" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1khpurd_di" bpmnElement="Activity_1khpurd">
+        <dc:Bounds x="1760" y="1520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_19hn9ut_di" bpmnElement="Activity_19hn9ut">
+        <dc:Bounds x="1050" y="1610" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_08s3nep_di" bpmnElement="Activity_08s3nep">
+        <dc:Bounds x="1165" y="340" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_00rf70m_di" bpmnElement="Activity_00rf70m">
+        <dc:Bounds x="1165" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0v3wfck_di" bpmnElement="TextAnnotation_0v3wfck">
+        <dc:Bounds x="898" y="263" width="125" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_15fmaff_di" bpmnElement="TextAnnotation_15fmaff">
+        <dc:Bounds x="1880" y="930" width="140" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0cb0tqc_di" bpmnElement="TextAnnotation_0cb0tqc">
+        <dc:Bounds x="460" y="442" width="190" height="68" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0o58c23_di" bpmnElement="TextAnnotation_0o58c23">
+        <dc:Bounds x="1030" y="640" width="209.99521378430123" height="54.24377791959158" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_10ji55f_di" bpmnElement="TextAnnotation_10ji55f">
+        <dc:Bounds x="1442" y="656" width="155" height="67" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1cvxbxf_di" bpmnElement="TextAnnotation_1cvxbxf">
+        <dc:Bounds x="1472" y="236" width="155" height="82" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_000tcc1_di" bpmnElement="TextAnnotation_000tcc1">
+        <dc:Bounds x="910" y="830" width="189.98620789779326" height="81.9904181184669" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_042jn0l_di" bpmnElement="TextAnnotation_042jn0l">
+        <dc:Bounds x="1060" y="1115" width="310" height="90" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_00m4al9_di" bpmnElement="TextAnnotation_00m4al9">
+        <dc:Bounds x="550" y="1143" width="125" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1klkk3p_di" bpmnElement="TextAnnotation_1klkk3p">
+        <dc:Bounds x="740" y="1710" width="303" height="130" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0yqztek_di" bpmnElement="TextAnnotation_0yqztek">
+        <dc:Bounds x="1240" y="820" width="260" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1hdyxzx_di" bpmnElement="Association_1hdyxzx">
+        <di:waypoint x="949" y="340" />
+        <di:waypoint x="949" y="313" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0gecuzz_di" bpmnElement="Association_0gecuzz">
+        <di:waypoint x="510" y="420" />
+        <di:waypoint x="510" y="442" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1ipk96j_di" bpmnElement="Association_1ipk96j">
+        <di:waypoint x="1521" y="340" />
+        <di:waypoint x="1521" y="318" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_06duxtz_di" bpmnElement="Association_06duxtz">
+        <di:waypoint x="1520" y="630" />
+        <di:waypoint x="1520" y="656" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0ltvd4f_di" bpmnElement="Association_0ltvd4f">
+        <di:waypoint x="1066" y="933" />
+        <di:waypoint x="1041" y="912" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0igj8ly_di" bpmnElement="Association_0igj8ly">
+        <di:waypoint x="1470" y="1160" />
+        <di:waypoint x="1370" y="1160" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1gfi7ct_di" bpmnElement="Association_1gfi7ct">
+        <di:waypoint x="1860" y="970" />
+        <di:waypoint x="1880" y="970" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_18hvaqq_di" bpmnElement="Association_18hvaqq">
+        <di:waypoint x="1181" y="600" />
+        <di:waypoint x="1147" y="640" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0odvgaf_di" bpmnElement="Association_0odvgaf">
+        <di:waypoint x="710" y="1161" />
+        <di:waypoint x="675" y="1161" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1tdbr4h_di" bpmnElement="Association_1tdbr4h">
+        <di:waypoint x="1051" y="1683" />
+        <di:waypoint x="1010" y="1710" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_1lamhm0_di" bpmnElement="Association_1lamhm0">
+        <di:waypoint x="1504" y="961" />
+        <di:waypoint x="1392" y="900" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
