@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_0x3yj66" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.14.0">
+  <bpmn:collaboration id="Collaboration_0x0lp1c">
+    <bpmn:participant id="Participant_0ek6xhg" name="HR - Visa Renewal (Malta)" processRef="Visa_Renewal_Malta" />
+  </bpmn:collaboration>
+  <bpmn:process id="Visa_Renewal_Malta" name="HR - Visa Renewal (Malta)" isExecutable="true">
+    <bpmn:startEvent id="StartEvent_1" name="Expat requires visa renewal" camunda:initiator="HRMalta">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Name" label="Name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Company" label="Company" type="string">
+            <camunda:validation>
+              <camunda:constraint name="required" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+        <camunda:executionListener expression="${execution.setVariable(&#34;Subject&#34;, Name)}" event="end" />
+      </bpmn:extensionElements>
+      <bpmn:outgoing>Flow_1rb5bjp</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="Flow_0ez7n3z" sourceRef="Activity_1uwqf6e" targetRef="Activity_0nwxzyo" />
+    <bpmn:sequenceFlow id="Flow_1440g3n" name="Pending approval " sourceRef="Activity_0nwxzyo" targetRef="Activity_1bc4qvk" />
+    <bpmn:sequenceFlow id="Flow_1rb5bjp" sourceRef="StartEvent_1" targetRef="Activity_1uwqf6e" />
+    <bpmn:sequenceFlow id="Flow_1wxcgkh" sourceRef="Activity_1bc4qvk" targetRef="Activity_01lk70m" />
+    <bpmn:sequenceFlow id="Flow_0yrja6c" sourceRef="Activity_01lk70m" targetRef="Event_06vm1vi" />
+    <bpmn:userTask id="Activity_1uwqf6e" name="Request documents from expat and inform Head of Office via slack/email " camunda:candidateGroups="HRMalta">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Name" label="Name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Company" label="Company" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1rb5bjp</bpmn:incoming>
+      <bpmn:outgoing>Flow_0ez7n3z</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_0nwxzyo" name="Submit application through government portal " camunda:candidateGroups="HRMalta">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Name" label="Name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Company" label="Company" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_0ez7n3z</bpmn:incoming>
+      <bpmn:outgoing>Flow_1440g3n</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Activity_01lk70m" name="Scan resident card and store in Box.com " camunda:candidateGroups="HRMalta">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Name" label="Name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Company" label="Company" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1wxcgkh</bpmn:incoming>
+      <bpmn:outgoing>Flow_0yrja6c</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="Event_06vm1vi" name="Visa Renewed">
+      <bpmn:incoming>Flow_0yrja6c</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Activity_1bc4qvk" name="Forward visa confirmation email  to expat for collection of resident card" camunda:candidateGroups="HRMalta">
+      <bpmn:extensionElements>
+        <camunda:formData>
+          <camunda:formField id="Name" label="Name" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+          <camunda:formField id="Company" label="Company" type="string">
+            <camunda:validation>
+              <camunda:constraint name="readonly" />
+            </camunda:validation>
+          </camunda:formField>
+        </camunda:formData>
+      </bpmn:extensionElements>
+      <bpmn:incoming>Flow_1440g3n</bpmn:incoming>
+      <bpmn:outgoing>Flow_1wxcgkh</bpmn:outgoing>
+    </bpmn:userTask>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0x0lp1c">
+      <bpmndi:BPMNShape id="Participant_0ek6xhg_di" bpmnElement="Participant_0ek6xhg" isHorizontal="true">
+        <dc:Bounds x="160" y="50" width="1048" height="260" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0yrja6c_di" bpmnElement="Flow_0yrja6c">
+        <di:waypoint x="1020" y="170" />
+        <di:waypoint x="1092" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1wxcgkh_di" bpmnElement="Flow_1wxcgkh">
+        <di:waypoint x="830" y="170" />
+        <di:waypoint x="920" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1rb5bjp_di" bpmnElement="Flow_1rb5bjp">
+        <di:waypoint x="275" y="170" />
+        <di:waypoint x="360" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1440g3n_di" bpmnElement="Flow_1440g3n">
+        <di:waypoint x="630" y="170" />
+        <di:waypoint x="730" y="170" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="637" y="152" width="86" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0ez7n3z_di" bpmnElement="Flow_0ez7n3z">
+        <di:waypoint x="460" y="170" />
+        <di:waypoint x="530" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="239" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="222" y="195" width="71" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0b9m0mp_di" bpmnElement="Activity_1uwqf6e">
+        <dc:Bounds x="360" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0ga634f_di" bpmnElement="Activity_0nwxzyo">
+        <dc:Bounds x="530" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01umuz1_di" bpmnElement="Activity_01lk70m">
+        <dc:Bounds x="920" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_06vm1vi_di" bpmnElement="Event_06vm1vi">
+        <dc:Bounds x="1092" y="152" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1075" y="195" width="71" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0opr1hj_di" bpmnElement="Activity_1bc4qvk">
+        <dc:Bounds x="730" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
