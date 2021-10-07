@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_1uva0jb" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.10.0">
+  <bpmn:collaboration id="Collaboration_0z8hd16">
+    <bpmn:participant id="Participant_1dz0dzy" name="CS (General) - Wrong Funds Transfer" processRef="Wrong_Funds_Transfer" />
+  </bpmn:collaboration>
+  <bpmn:process id="Wrong_Funds_Transfer" name="CS (General) - Wrong Funds Transfer" isExecutable="true">
+    <bpmn:laneSet id="LaneSet_1pa052a">
+      <bpmn:lane id="Lane_0qbwyah" name="CS">
+        <bpmn:flowNodeRef>Activity_15j5x0c</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_1</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1lo0qc3</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_087i0cc</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Activity_1rmvvpc</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0g6f8st" name="Payments">
+        <bpmn:flowNodeRef>Activity_1srprun</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_0lwprj8" name="Compliance">
+        <bpmn:flowNodeRef>Activity_0bka9ob</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:task id="Activity_0bka9ob" name="Approve refund">
+      <bpmn:incoming>Flow_1tpd1uf</bpmn:incoming>
+      <bpmn:outgoing>Flow_1m835db</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1srprun" name="Reverse funds to the payment agent/correct account holder and inform CS">
+      <bpmn:incoming>Flow_1m835db</bpmn:incoming>
+    </bpmn:task>
+    <bpmn:task id="Activity_15j5x0c" name="Inform the wrong account holder on the temporary account lock and request client to deposit funds">
+      <bpmn:incoming>Flow_0gry3zq</bpmn:incoming>
+      <bpmn:outgoing>Flow_1toihdk</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:startEvent id="StartEvent_1" name="Informed by client/payment agent on funds transferred to wrong account">
+      <bpmn:outgoing>Flow_1iz73dk</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_1lo0qc3" name="Disable trading and withdrawal lock the wrong account where deposit was made by mistake">
+      <bpmn:incoming>Flow_1iz73dk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mvae9u</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0gry3zq</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_087i0cc" name="Inform the wrong account holder on the temporary account lock and get approval to reverse funds">
+      <bpmn:incoming>Flow_1mvae9u</bpmn:incoming>
+      <bpmn:outgoing>Flow_06rwxlw</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1rmvvpc" name="Email compliance and cc i-payments to request approval for the refund">
+      <bpmn:incoming>Flow_06rwxlw</bpmn:incoming>
+      <bpmn:incoming>Flow_1toihdk</bpmn:incoming>
+      <bpmn:outgoing>Flow_1tpd1uf</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_1iz73dk" sourceRef="StartEvent_1" targetRef="Activity_1lo0qc3" />
+    <bpmn:sequenceFlow id="Flow_1mvae9u" name="Sufficient funds for reversal" sourceRef="Activity_1lo0qc3" targetRef="Activity_087i0cc">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">123</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_06rwxlw" sourceRef="Activity_087i0cc" targetRef="Activity_1rmvvpc" />
+    <bpmn:sequenceFlow id="Flow_0gry3zq" name="Insufficient funds for reversal" sourceRef="Activity_1lo0qc3" targetRef="Activity_15j5x0c">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">123</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_1toihdk" name="After funds are deposited" sourceRef="Activity_15j5x0c" targetRef="Activity_1rmvvpc" />
+    <bpmn:sequenceFlow id="Flow_1tpd1uf" sourceRef="Activity_1rmvvpc" targetRef="Activity_0bka9ob" />
+    <bpmn:sequenceFlow id="Flow_1m835db" sourceRef="Activity_0bka9ob" targetRef="Activity_1srprun" />
+    <bpmn:textAnnotation id="TextAnnotation_18du297">
+      <bpmn:text>If client is unresponsive:
+- payment agent: compliance team will need to provide approval to force a refund
+- client: CS will inform the wrong account holder that funds will be reversed to the correct account holder</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0dlyxdh" sourceRef="Activity_087i0cc" targetRef="TextAnnotation_18du297" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0z8hd16">
+      <bpmndi:BPMNShape id="Participant_1dz0dzy_di" bpmnElement="Participant_1dz0dzy" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="1170" height="670" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0lwprj8_di" bpmnElement="Lane_0lwprj8" isHorizontal="true">
+        <dc:Bounds x="190" y="510" width="1140" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0g6f8st_di" bpmnElement="Lane_0g6f8st" isHorizontal="true">
+        <dc:Bounds x="190" y="630" width="1140" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_0qbwyah_di" bpmnElement="Lane_0qbwyah" isHorizontal="true">
+        <dc:Bounds x="190" y="80" width="1140" height="430" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_1m835db_di" bpmnElement="Flow_1m835db">
+        <di:waypoint x="920" y="610" />
+        <di:waypoint x="920" y="650" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1tpd1uf_di" bpmnElement="Flow_1tpd1uf">
+        <di:waypoint x="920" y="300" />
+        <di:waypoint x="920" y="530" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1toihdk_di" bpmnElement="Flow_1toihdk">
+        <di:waypoint x="710" y="420" />
+        <di:waypoint x="800" y="420" />
+        <di:waypoint x="800" y="260" />
+        <di:waypoint x="870" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="720" y="391" width="73" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0gry3zq_di" bpmnElement="Flow_0gry3zq">
+        <di:waypoint x="450" y="300" />
+        <di:waypoint x="450" y="420" />
+        <di:waypoint x="610" y="420" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="453" y="351" width="83" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_06rwxlw_di" bpmnElement="Flow_06rwxlw">
+        <di:waypoint x="710" y="260" />
+        <di:waypoint x="870" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mvae9u_di" bpmnElement="Flow_1mvae9u">
+        <di:waypoint x="500" y="260" />
+        <di:waypoint x="610" y="260" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="522" y="229" width="76" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1iz73dk_di" bpmnElement="Flow_1iz73dk">
+        <di:waypoint x="308" y="260" />
+        <di:waypoint x="400" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_0bka9ob_di" bpmnElement="Activity_0bka9ob">
+        <dc:Bounds x="870" y="530" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1srprun_di" bpmnElement="Activity_1srprun">
+        <dc:Bounds x="870" y="650" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_15j5x0c_di" bpmnElement="Activity_15j5x0c">
+        <dc:Bounds x="610" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="272" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="254" y="285" width="73" height="66" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1lo0qc3_di" bpmnElement="Activity_1lo0qc3">
+        <dc:Bounds x="400" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_087i0cc_di" bpmnElement="Activity_087i0cc">
+        <dc:Bounds x="610" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1rmvvpc_di" bpmnElement="Activity_1rmvvpc">
+        <dc:Bounds x="870" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_18du297_di" bpmnElement="TextAnnotation_18du297">
+        <dc:Bounds x="730" y="100" width="330" height="82" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_0dlyxdh_di" bpmnElement="Association_0dlyxdh">
+        <di:waypoint x="693" y="220" />
+        <di:waypoint x="730" y="175" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
