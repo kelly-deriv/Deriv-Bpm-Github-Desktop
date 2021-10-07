@@ -11,7 +11,6 @@
         <bpmn:flowNodeRef>Activity_1lo0qc3</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_087i0cc</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Activity_1rmvvpc</bpmn:flowNodeRef>
-        <bpmn:flowNodeRef>Activity_06no7w9</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_0g6f8st" name="Payments">
         <bpmn:flowNodeRef>Activity_1srprun</bpmn:flowNodeRef>
@@ -26,7 +25,6 @@
     </bpmn:task>
     <bpmn:task id="Activity_1srprun" name="Reverse funds to the payment agent/correct account holder and inform CS">
       <bpmn:incoming>Flow_1m835db</bpmn:incoming>
-      <bpmn:outgoing>Flow_0hfi256</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Activity_15j5x0c" name="Inform the wrong account holder on the temporary account lock and request client to deposit funds">
       <bpmn:incoming>Flow_0gry3zq</bpmn:incoming>
@@ -49,9 +47,6 @@
       <bpmn:incoming>Flow_1toihdk</bpmn:incoming>
       <bpmn:outgoing>Flow_1tpd1uf</bpmn:outgoing>
     </bpmn:task>
-    <bpmn:task id="Activity_06no7w9" name="Remove &#34;disable trading and withdrawal&#34; lock on client&#39;s account">
-      <bpmn:incoming>Flow_0hfi256</bpmn:incoming>
-    </bpmn:task>
     <bpmn:sequenceFlow id="Flow_1iz73dk" sourceRef="StartEvent_1" targetRef="Activity_1lo0qc3" />
     <bpmn:sequenceFlow id="Flow_1mvae9u" name="Sufficient funds for reversal" sourceRef="Activity_1lo0qc3" targetRef="Activity_087i0cc">
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">123</bpmn:conditionExpression>
@@ -63,7 +58,6 @@
     <bpmn:sequenceFlow id="Flow_1toihdk" name="After funds are deposited" sourceRef="Activity_15j5x0c" targetRef="Activity_1rmvvpc" />
     <bpmn:sequenceFlow id="Flow_1tpd1uf" sourceRef="Activity_1rmvvpc" targetRef="Activity_0bka9ob" />
     <bpmn:sequenceFlow id="Flow_1m835db" sourceRef="Activity_0bka9ob" targetRef="Activity_1srprun" />
-    <bpmn:sequenceFlow id="Flow_0hfi256" sourceRef="Activity_1srprun" targetRef="Activity_06no7w9" />
     <bpmn:textAnnotation id="TextAnnotation_18du297">
       <bpmn:text>If client is unresponsive:
 - payment agent: compliance team will need to provide approval to force a refund
@@ -85,11 +79,6 @@
       <bpmndi:BPMNShape id="Lane_0qbwyah_di" bpmnElement="Lane_0qbwyah" isHorizontal="true">
         <dc:Bounds x="190" y="80" width="1140" height="430" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Flow_0hfi256_di" bpmnElement="Flow_0hfi256">
-        <di:waypoint x="970" y="690" />
-        <di:waypoint x="1130" y="690" />
-        <di:waypoint x="1130" y="300" />
-      </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_1m835db_di" bpmnElement="Flow_1m835db">
         <di:waypoint x="920" y="610" />
         <di:waypoint x="920" y="650" />
@@ -153,9 +142,6 @@
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Activity_1rmvvpc_di" bpmnElement="Activity_1rmvvpc">
         <dc:Bounds x="870" y="220" width="100" height="80" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Activity_06no7w9_di" bpmnElement="Activity_06no7w9">
-        <dc:Bounds x="1080" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="TextAnnotation_18du297_di" bpmnElement="TextAnnotation_18du297">
         <dc:Bounds x="730" y="100" width="330" height="82" />
