@@ -1,0 +1,212 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:modeler="http://camunda.org/schema/modeler/1.0" id="Definitions_09o85qy" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.8.1" modeler:executionPlatform="Camunda Platform" modeler:executionPlatformVersion="7.15.0">
+  <bpmn:collaboration id="Collaboration_0bdpwwo">
+    <bpmn:participant id="Participant_0sfgpc2" name="Usability - Website / Product Usability Review" processRef="Website_Product_Usability_Review" />
+  </bpmn:collaboration>
+  <bpmn:process id="Website_Product_Usability_Review" name="Usability - Website / Product Usability Review" isExecutable="true">
+    <bpmn:task id="Activity_00xma2g" name="Schedule website testing session with new joiners">
+      <bpmn:incoming>Flow_1cl8hgw</bpmn:incoming>
+      <bpmn:outgoing>Flow_0crvfvn</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0qtgcl9" name="Share Redmine card in #team_usability and wait for relevant team to pick up the tasks">
+      <bpmn:incoming>Flow_0zdj3q6</bpmn:incoming>
+      <bpmn:outgoing>Flow_0vn1fde</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_0oudi9r" name="Create Redmine cards based on the observation and update priority level">
+      <bpmn:incoming>Flow_0crvfvn</bpmn:incoming>
+      <bpmn:outgoing>Flow_0zdj3q6</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_02qxxh4" name="Issue raised on #team_usability" sourceRef="StartEvent_1" targetRef="Activity_1h9fc2o" />
+    <bpmn:sequenceFlow id="Flow_1cl8hgw" name="Website review with new joiners" sourceRef="StartEvent_1" targetRef="Activity_00xma2g" />
+    <bpmn:sequenceFlow id="Flow_0n5skob" name="Product review" sourceRef="StartEvent_1" targetRef="Activity_1pr50d8" />
+    <bpmn:sequenceFlow id="Flow_0crvfvn" sourceRef="Activity_00xma2g" targetRef="Activity_0oudi9r" />
+    <bpmn:sequenceFlow id="Flow_1fm3ugz" sourceRef="Activity_1pr50d8" targetRef="Activity_1j7p570" />
+    <bpmn:sequenceFlow id="Flow_0zdj3q6" sourceRef="Activity_0oudi9r" targetRef="Activity_0qtgcl9" />
+    <bpmn:sequenceFlow id="Flow_1mhftx5" sourceRef="Activity_1b07f5b" targetRef="Activity_1m3cpop" />
+    <bpmn:sequenceFlow id="Flow_0i2pb6b" sourceRef="Activity_01i0cme" targetRef="Activity_1m3cpop" />
+    <bpmn:sequenceFlow id="Flow_0vn1fde" sourceRef="Activity_0qtgcl9" targetRef="Activity_1m3cpop" />
+    <bpmn:sequenceFlow id="Flow_1ojubhs" sourceRef="Activity_1m3cpop" targetRef="Event_0r06z6b" />
+    <bpmn:sequenceFlow id="Flow_1sc2bwp" sourceRef="Activity_1h9fc2o" targetRef="Activity_1b07f5b" />
+    <bpmn:sequenceFlow id="Flow_0oe683m" sourceRef="Activity_1j7p570" targetRef="Activity_01i0cme" />
+    <bpmn:startEvent id="StartEvent_1">
+      <bpmn:outgoing>Flow_02qxxh4</bpmn:outgoing>
+      <bpmn:outgoing>Flow_1cl8hgw</bpmn:outgoing>
+      <bpmn:outgoing>Flow_0n5skob</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Activity_1pr50d8" name="Conduct review on the products and create reports on google docs">
+      <bpmn:incoming>Flow_0n5skob</bpmn:incoming>
+      <bpmn:outgoing>Flow_1fm3ugz</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1j7p570" name="Create Redmine cards and update priority level">
+      <bpmn:incoming>Flow_1fm3ugz</bpmn:incoming>
+      <bpmn:outgoing>Flow_0oe683m</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_01i0cme" name="Share the reports to #team_usability and relevant product channel &#38; inform PM">
+      <bpmn:incoming>Flow_0oe683m</bpmn:incoming>
+      <bpmn:outgoing>Flow_0i2pb6b</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1b07f5b" name="Update Redmine card priority level, share card in relevant channels, and inform PM">
+      <bpmn:incoming>Flow_1sc2bwp</bpmn:incoming>
+      <bpmn:outgoing>Flow_1mhftx5</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Activity_1h9fc2o" name="Perform testing on the issue (if needed) and loop in related members in the channel">
+      <bpmn:incoming>Flow_02qxxh4</bpmn:incoming>
+      <bpmn:outgoing>Flow_1sc2bwp</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="Event_0r06z6b" name="Issues fixed / follow up by responsible team">
+      <bpmn:incoming>Flow_1ojubhs</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:task id="Activity_1m3cpop" name="Follow up issues progression on Redmine/via email updates/ #team_usability">
+      <bpmn:incoming>Flow_0i2pb6b</bpmn:incoming>
+      <bpmn:incoming>Flow_0vn1fde</bpmn:incoming>
+      <bpmn:incoming>Flow_1mhftx5</bpmn:incoming>
+      <bpmn:outgoing>Flow_1ojubhs</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:textAnnotation id="TextAnnotation_0r8l15k">
+      <bpmn:text>- min 3 participants are required to establish an issue</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_1kmi08s" sourceRef="Activity_00xma2g" targetRef="TextAnnotation_0r8l15k" />
+    <bpmn:textAnnotation id="TextAnnotation_0iand9d">
+      <bpmn:text>- review on new product
+- review on significant issues</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_07z487i" sourceRef="Activity_1pr50d8" targetRef="TextAnnotation_0iand9d" />
+    <bpmn:textAnnotation id="TextAnnotation_1idi0xw">
+      <bpmn:text>- whoever raised the issue will create Redmine card</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_0mi20uy" sourceRef="Activity_1h9fc2o" targetRef="TextAnnotation_1idi0xw" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Collaboration_0bdpwwo">
+      <bpmndi:BPMNShape id="Participant_0sfgpc2_di" bpmnElement="Participant_0sfgpc2" isHorizontal="true">
+        <dc:Bounds x="140" y="50" width="1130" height="640" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_0oe683m_di" bpmnElement="Flow_0oe683m">
+        <di:waypoint x="720" y="180" />
+        <di:waypoint x="810" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1sc2bwp_di" bpmnElement="Flow_1sc2bwp">
+        <di:waypoint x="520" y="540" />
+        <di:waypoint x="620" y="540" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1ojubhs_di" bpmnElement="Flow_1ojubhs">
+        <di:waypoint x="1100" y="360" />
+        <di:waypoint x="1162" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0vn1fde_di" bpmnElement="Flow_0vn1fde">
+        <di:waypoint x="910" y="360" />
+        <di:waypoint x="1000" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0i2pb6b_di" bpmnElement="Flow_0i2pb6b">
+        <di:waypoint x="910" y="180" />
+        <di:waypoint x="1050" y="180" />
+        <di:waypoint x="1050" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1mhftx5_di" bpmnElement="Flow_1mhftx5">
+        <di:waypoint x="720" y="540" />
+        <di:waypoint x="1050" y="540" />
+        <di:waypoint x="1050" y="400" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0zdj3q6_di" bpmnElement="Flow_0zdj3q6">
+        <di:waypoint x="720" y="360" />
+        <di:waypoint x="810" y="360" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1fm3ugz_di" bpmnElement="Flow_1fm3ugz">
+        <di:waypoint x="520" y="180" />
+        <di:waypoint x="620" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0crvfvn_di" bpmnElement="Flow_0crvfvn">
+        <di:waypoint x="520" y="360" />
+        <di:waypoint x="620" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="708" y="360" width="85" height="53" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0n5skob_di" bpmnElement="Flow_0n5skob">
+        <di:waypoint x="228" y="360" />
+        <di:waypoint x="280" y="360" />
+        <di:waypoint x="280" y="180" />
+        <di:waypoint x="420" y="180" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="307" y="163" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1cl8hgw_di" bpmnElement="Flow_1cl8hgw">
+        <di:waypoint x="228" y="360" />
+        <di:waypoint x="420" y="360" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="304" y="331" width="79" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_02qxxh4_di" bpmnElement="Flow_02qxxh4">
+        <di:waypoint x="228" y="360" />
+        <di:waypoint x="280" y="360" />
+        <di:waypoint x="280" y="540" />
+        <di:waypoint x="420" y="540" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="305" y="510" width="77" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Activity_00xma2g_di" bpmnElement="Activity_00xma2g">
+        <dc:Bounds x="420" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0qtgcl9_di" bpmnElement="Activity_0qtgcl9">
+        <dc:Bounds x="810" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oudi9r_di" bpmnElement="Activity_0oudi9r">
+        <dc:Bounds x="620" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
+        <dc:Bounds x="192" y="342" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="400" y="393" width="59" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1pr50d8_di" bpmnElement="Activity_1pr50d8">
+        <dc:Bounds x="420" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1j7p570_di" bpmnElement="Activity_1j7p570">
+        <dc:Bounds x="620" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_01i0cme_di" bpmnElement="Activity_01i0cme">
+        <dc:Bounds x="810" y="140" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1b07f5b_di" bpmnElement="Activity_1b07f5b">
+        <dc:Bounds x="620" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1h9fc2o_di" bpmnElement="Activity_1h9fc2o">
+        <dc:Bounds x="420" y="500" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0r06z6b_di" bpmnElement="Event_0r06z6b">
+        <dc:Bounds x="1162" y="342" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1141" y="385" width="84" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_1m3cpop_di" bpmnElement="Activity_1m3cpop">
+        <dc:Bounds x="1000" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0r8l15k_di" bpmnElement="TextAnnotation_0r8l15k">
+        <dc:Bounds x="420" y="260" width="190" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_0iand9d_di" bpmnElement="TextAnnotation_0iand9d">
+        <dc:Bounds x="470" y="80" width="170" height="40" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="TextAnnotation_1idi0xw_di" bpmnElement="TextAnnotation_1idi0xw">
+        <dc:Bounds x="427" y="620" width="182.9953743545611" height="39.99031841652324" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_1kmi08s_di" bpmnElement="Association_1kmi08s">
+        <di:waypoint x="470" y="320" />
+        <di:waypoint x="470" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_07z487i_di" bpmnElement="Association_07z487i">
+        <di:waypoint x="495" y="140" />
+        <di:waypoint x="508" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Association_0mi20uy_di" bpmnElement="Association_0mi20uy">
+        <di:waypoint x="473" y="580" />
+        <di:waypoint x="476" y="620" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
